@@ -3,121 +3,205 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Поиск по кружкам</title>
+  <title>Кружки</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- КЛАСТЕРЫ -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
   <style>
     body { font-family: Arial; padding: 20px; background:#f5f5f5; }
-    input, select, button { padding: 10px; width: 100%; margin-bottom: 10px; font-size: 16px; border-radius:8px; border:1px solid #ccc; }
+
     .filters { display:grid; gap:10px; margin-bottom:15px; }
-    .item { padding: 15px; background:white; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
-    #map { height: 300px; margin-bottom:15px; border-radius:12px; }
+
+    input, select, button {
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      border-radius:8px;
+      border:1px solid #ccc;
+    }
+
+    .item {
+      padding: 15px;
+      background:white;
+      border-radius:12px;
+      margin-bottom:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.05);
+      transition:0.2s;
+    }
+
+    .item:hover {
+      transform: translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .title { font-weight:bold; font-size:16px; }
+
+    .meta { font-size:13px; color:#666; margin-top:5px; }
+
+    .link {
+      display:inline-block;
+      margin-top:8px;
+      color:#2563eb;
+      text-decoration:none;
+      font-weight:bold;
+    }
+
+    #map {
+      height: 350px;
+      margin-bottom:15px;
+      border-radius:12px;
+      display:none;
+    }
+
+    .topbar {
+      display:flex;
+      gap:10px;
+    }
+
+    .count {
+      font-weight:bold;
+      margin:10px 0;
+    }
   </style>
 </head>
 <body>
-  <h1>Поиск по кружкам</h1>
 
-  <div class="filters">
-    <input type="text" id="search" placeholder="Поиск..." />
-    <select id="categoryFilter"><option value="">Все категории</option></select>
-    <button id="showMap">Показать карту</button>
+<h1>Кружки</h1>
+
+<div class="filters">
+  <input type="text" id="search" placeholder="Поиск..." />
+
+  <select id="categoryFilter">
+    <option value="">Все категории</option>
+  </select>
+
+  <div class="topbar">
+    <button id="toggleMap">Карта</button>
+    <button id="reset">Сброс</button>
   </div>
+</div>
 
-  <div id="map" style="display:none"></div>
-  <div id="list"></div>
+<div id="map"></div>
+<div class="count" id="count"></div>
+<div id="list"></div>
 
-  <script>
-    let data = [];
-    let map;
-    let markers = [];
-    let mapVisible = false;
+<script>
+let data = [];
+let map, cluster;
+let mapVisible = false;
 
-    const list = document.getElementById('list');
-    const search = document.getElementById('search');
-    const categoryFilter = document.getElementById('categoryFilter');
-    const showMapBtn = document.getElementById('showMap');
+const list = document.getElementById('list');
+const search = document.getElementById('search');
+const categoryFilter = document.getElementById('categoryFilter');
+const toggleMap = document.getElementById('toggleMap');
+const resetBtn = document.getElementById('reset');
+const count = document.getElementById('count');
 
-    function initMap() {
-      map = L.map('map').setView([55.75, 37.61], 10);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    }
+function initMap() {
+  map = L.map('map').setView([55.75, 37.61], 10);
 
-    function showMarkers(items) {
-      markers.forEach(m => map.removeLayer(m));
-      markers = [];
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-      items.forEach(item => {
-        const lat = item.lat;
-        const lon = item.lon;
+  cluster = L.markerClusterGroup();
+  map.addLayer(cluster);
+}
 
-        if (!lat || !lon) return;
+function updateMap(items) {
+  if (!map) return;
 
-        const marker = L.marker([lat, lon]).addTo(map)
-          .bindPopup(item['Наименование детского объединения']);
+  cluster.clearLayers();
 
-        markers.push(marker);
-      });
-    }
+  items.forEach(item => {
+    if (!item.lat || !item.lon) return;
 
-    function render(items) {
-      list.innerHTML = '';
+    const marker = L.marker([item.lat, item.lon])
+      .bindPopup(`
+        <b>${item['Наименование детского объединения']}</b><br>
+        ${item['Адрес предоставления услуги']}
+      `);
 
-      items.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `
-          <b>${item['Наименование детского объединения']}</b><br>
-          ${item['Адрес предоставления услуги']}
-        `;
-        list.appendChild(div);
-      });
+    cluster.addLayer(marker);
+  });
+}
 
-      if (mapVisible) showMarkers(items);
-    }
+function render(items) {
+  list.innerHTML = '';
+  count.textContent = `Найдено: ${items.length}`;
 
-    function applyFilters() {
-      const text = search.value.toLowerCase();
-      const category = categoryFilter.value;
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'item';
 
-      const filtered = data.filter(item => {
-        const t = Object.values(item).join(' ').toLowerCase();
-        return t.includes(text) && (!category || item['Наименование третьего уровня РБНДО'] === category);
-      });
+    div.innerHTML = `
+      <div class="title">${item['Наименование детского объединения']}</div>
+      <div class="meta">${item['Наименование третьего уровня РБНДО']}</div>
+      <div class="meta">${item['Возраст']}</div>
+      <div class="meta">${item['Адрес предоставления услуги']}</div>
+      <a class="link" href="${item['Ссылка']}" target="_blank">Подробнее →</a>
+    `;
 
-      render(filtered);
-    }
+    list.appendChild(div);
+  });
 
-    function initCategories() {
-      const categories = [...new Set(data.map(i => i['Наименование третьего уровня РБНДО']))];
-      categories.forEach(cat => {
-        const o = document.createElement('option');
-        o.value = cat;
-        o.textContent = cat;
-        categoryFilter.appendChild(o);
-      });
-    }
+  if (mapVisible) updateMap(items);
+}
 
-    showMapBtn.addEventListener('click', () => {
-      mapVisible = !mapVisible;
-      document.getElementById('map').style.display = mapVisible ? 'block' : 'none';
-      showMapBtn.textContent = mapVisible ? 'Скрыть карту' : 'Показать карту';
+function applyFilters() {
+  const text = search.value.toLowerCase();
+  const category = categoryFilter.value;
 
-      if (mapVisible && !map) initMap();
-      applyFilters();
-    });
+  const filtered = data.filter(item => {
+    const t = Object.values(item).join(' ').toLowerCase();
+    return t.includes(text) && (!category || item['Наименование третьего уровня РБНДО'] === category);
+  });
 
-    search.addEventListener('input', applyFilters);
-    categoryFilter.addEventListener('change', applyFilters);
+  render(filtered);
+}
 
-    fetch('./data.json')
-      .then(r => r.json())
-      .then(json => {
-        data = json;
-        initCategories();
-        render(data);
-      });
-  </script>
+function initCategories() {
+  const cats = [...new Set(data.map(i => i['Наименование третьего уровня РБНДО']))];
+  cats.sort();
+
+  cats.forEach(cat => {
+    const o = document.createElement('option');
+    o.value = cat;
+    o.textContent = cat;
+    categoryFilter.appendChild(o);
+  });
+}
+
+// события
+search.addEventListener('input', applyFilters);
+categoryFilter.addEventListener('change', applyFilters);
+
+resetBtn.addEventListener('click', () => {
+  search.value = '';
+  categoryFilter.value = '';
+  applyFilters();
+});
+
+toggleMap.addEventListener('click', () => {
+  mapVisible = !mapVisible;
+  document.getElementById('map').style.display = mapVisible ? 'block' : 'none';
+
+  if (mapVisible && !map) initMap();
+
+  applyFilters();
+});
+
+fetch('./data.json')
+  .then(r => r.json())
+  .then(json => {
+    data = json;
+    initCategories();
+    render(data);
+  });
+</script>
+
 </body>
 </html>
