@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Поиск по кружкам</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <style>
     body { font-family: Arial; padding: 20px; background:#f5f5f5; }
-    input, select { padding: 10px; width: 100%; margin-bottom: 10px; font-size: 16px; border-radius:8px; border:1px solid #ccc; }
+    input, select, button { padding: 10px; width: 100%; margin-bottom: 10px; font-size: 16px; border-radius:8px; border:1px solid #ccc; }
     .filters { display:grid; gap:10px; margin-bottom:15px; }
-    .item { padding: 15px; background:white; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); position:relative; }
-    .title { font-weight: bold; font-size:18px; margin-bottom:5px; }
-    .link { color: blue; display:inline-block; margin-top:5px; }
-    .count { margin: 10px 0; font-weight: bold; }
-    .fav { position:absolute; top:10px; right:10px; cursor:pointer; font-size:20px; }
-    .active { color: gold; }
+    .item { padding: 15px; background:white; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
+    #map { height: 300px; margin-bottom:15px; border-radius:12px; }
   </style>
 </head>
 <body>
@@ -21,124 +21,102 @@
 
   <div class="filters">
     <input type="text" id="search" placeholder="Поиск..." />
-
-    <select id="categoryFilter">
-      <option value="">Все категории</option>
-    </select>
-
-    <select id="ageFilter">
-      <option value="">Любой возраст</option>
-      <option value="6-10">6–10</option>
-      <option value="10-14">10–14</option>
-      <option value="14+">14+</option>
-    </select>
+    <select id="categoryFilter"><option value="">Все категории</option></select>
+    <button id="showMap">Показать карту</button>
   </div>
 
-  <div class="count" id="count"></div>
+  <div id="map" style="display:none"></div>
   <div id="list"></div>
 
   <script>
     let data = [];
-    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    let map;
+    let markers = [];
+    let mapVisible = false;
 
     const list = document.getElementById('list');
     const search = document.getElementById('search');
     const categoryFilter = document.getElementById('categoryFilter');
-    const ageFilter = document.getElementById('ageFilter');
-    const count = document.getElementById('count');
+    const showMapBtn = document.getElementById('showMap');
 
-    function toggleFavorite(id) {
-      if (favorites.includes(id)) {
-        favorites = favorites.filter(f => f !== id);
-      } else {
-        favorites.push(id);
-      }
-      localStorage.setItem('favorites', JSON.stringify(favorites));
-      applyFilters();
+    function initMap() {
+      map = L.map('map').setView([55.75, 37.61], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    }
+
+    function showMarkers(items) {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+
+      items.forEach(item => {
+        const lat = item.lat;
+        const lon = item.lon;
+
+        if (!lat || !lon) return;
+
+        const marker = L.marker([lat, lon]).addTo(map)
+          .bindPopup(item['Наименование детского объединения']);
+
+        markers.push(marker);
+      });
     }
 
     function render(items) {
       list.innerHTML = '';
-      count.textContent = `Найдено: ${items.length}`;
 
-      items.forEach((item, index) => {
-        const id = item['Ссылка'];
-        const isFav = favorites.includes(id);
-
+      items.forEach(item => {
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `
-          <div class="fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${id}')">★</div>
-          <div class="title">${item['Наименование детского объединения']}</div>
-          <div>Категория: ${item['Наименование третьего уровня РБНДО']}</div>
-          <div>Возраст: ${item['Возраст']}</div>
-          <div>Педагог: ${item['Педагог']}</div>
-          <div>Адрес: ${item['Адрес предоставления услуги']}</div>
-          <a class="link" href="${item['Ссылка']}" target="_blank">Подробнее</a>
+          <b>${item['Наименование детского объединения']}</b><br>
+          ${item['Адрес предоставления услуги']}
         `;
         list.appendChild(div);
       });
-    }
 
-    function matchAge(itemAge, filter) {
-      if (!filter) return true;
-      if (!itemAge) return false;
-
-      if (filter === '14+') return itemAge.includes('14') || itemAge.includes('15') || itemAge.includes('16') || itemAge.includes('17') || itemAge.includes('18');
-
-      const [min, max] = filter.split('-').map(Number);
-      const nums = itemAge.match(/\d+/g);
-      if (!nums) return false;
-
-      const itemMin = Number(nums[0]);
-      return itemMin >= min && itemMin <= max;
+      if (mapVisible) showMarkers(items);
     }
 
     function applyFilters() {
       const text = search.value.toLowerCase();
       const category = categoryFilter.value;
-      const age = ageFilter.value;
 
       const filtered = data.filter(item => {
-        const matchesText = Object.values(item).join(' ').toLowerCase().includes(text);
-        const matchesCategory = !category || item['Наименование третьего уровня РБНДО'] === category;
-        const matchesAge = matchAge(item['Возраст'], age);
-
-        return matchesText && matchesCategory && matchesAge;
+        const t = Object.values(item).join(' ').toLowerCase();
+        return t.includes(text) && (!category || item['Наименование третьего уровня РБНДО'] === category);
       });
 
       render(filtered);
     }
 
-    function setupFilters() {
-      search.addEventListener('input', applyFilters);
-      categoryFilter.addEventListener('change', applyFilters);
-      ageFilter.addEventListener('change', applyFilters);
-    }
-
     function initCategories() {
-      const categories = [...new Set(data.map(item => item['Наименование третьего уровня РБНДО']))];
-      categories.sort();
-
+      const categories = [...new Set(data.map(i => i['Наименование третьего уровня РБНДО']))];
       categories.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        categoryFilter.appendChild(option);
+        const o = document.createElement('option');
+        o.value = cat;
+        o.textContent = cat;
+        categoryFilter.appendChild(o);
       });
     }
 
+    showMapBtn.addEventListener('click', () => {
+      mapVisible = !mapVisible;
+      document.getElementById('map').style.display = mapVisible ? 'block' : 'none';
+      showMapBtn.textContent = mapVisible ? 'Скрыть карту' : 'Показать карту';
+
+      if (mapVisible && !map) initMap();
+      applyFilters();
+    });
+
+    search.addEventListener('input', applyFilters);
+    categoryFilter.addEventListener('change', applyFilters);
+
     fetch('./data.json')
-      .then(res => res.json())
+      .then(r => r.json())
       .then(json => {
         data = json;
         initCategories();
-        setupFilters();
         render(data);
-      })
-      .catch(err => {
-        list.innerHTML = 'Ошибка загрузки данных 😢';
-        console.error(err);
       });
   </script>
 </body>
