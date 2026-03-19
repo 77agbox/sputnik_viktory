@@ -5,21 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Поиск по кружкам</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    input, select { padding: 10px; width: 100%; margin-bottom: 10px; font-size: 16px; }
-    .item { padding: 12px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 8px; }
-    .title { font-weight: bold; }
-    .link { color: blue; }
+    body { font-family: Arial; padding: 20px; background:#f5f5f5; }
+    input, select { padding: 10px; width: 100%; margin-bottom: 10px; font-size: 16px; border-radius:8px; border:1px solid #ccc; }
+    .filters { display:grid; gap:10px; margin-bottom:15px; }
+    .item { padding: 15px; background:white; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
+    .title { font-weight: bold; font-size:18px; margin-bottom:5px; }
+    .link { color: blue; display:inline-block; margin-top:5px; }
     .count { margin: 10px 0; font-weight: bold; }
   </style>
 </head>
 <body>
   <h1>Поиск по кружкам</h1>
 
-  <input type="text" id="search" placeholder="Поиск..." />
-  <select id="categoryFilter">
-    <option value="">Все категории</option>
-  </select>
+  <div class="filters">
+    <input type="text" id="search" placeholder="Поиск..." />
+
+    <select id="categoryFilter">
+      <option value="">Все категории</option>
+    </select>
+
+    <select id="ageFilter">
+      <option value="">Любой возраст</option>
+      <option value="6-10">6–10</option>
+      <option value="10-14">10–14</option>
+      <option value="14+">14+</option>
+    </select>
+  </div>
 
   <div class="count" id="count"></div>
   <div id="list"></div>
@@ -30,6 +41,7 @@
     const list = document.getElementById('list');
     const search = document.getElementById('search');
     const categoryFilter = document.getElementById('categoryFilter');
+    const ageFilter = document.getElementById('ageFilter');
     const count = document.getElementById('count');
 
     function render(items) {
@@ -51,14 +63,31 @@
       });
     }
 
+    function matchAge(itemAge, filter) {
+      if (!filter) return true;
+      if (!itemAge) return false;
+
+      if (filter === '14+') return itemAge.includes('14') || itemAge.includes('15') || itemAge.includes('16') || itemAge.includes('17') || itemAge.includes('18');
+
+      const [min, max] = filter.split('-').map(Number);
+      const nums = itemAge.match(/\d+/g);
+      if (!nums) return false;
+
+      const itemMin = Number(nums[0]);
+      return itemMin >= min && itemMin <= max;
+    }
+
     function applyFilters() {
       const text = search.value.toLowerCase();
       const category = categoryFilter.value;
+      const age = ageFilter.value;
 
       const filtered = data.filter(item => {
         const matchesText = Object.values(item).join(' ').toLowerCase().includes(text);
         const matchesCategory = !category || item['Наименование третьего уровня РБНДО'] === category;
-        return matchesText && matchesCategory;
+        const matchesAge = matchAge(item['Возраст'], age);
+
+        return matchesText && matchesCategory && matchesAge;
       });
 
       render(filtered);
@@ -67,6 +96,7 @@
     function setupFilters() {
       search.addEventListener('input', applyFilters);
       categoryFilter.addEventListener('change', applyFilters);
+      ageFilter.addEventListener('change', applyFilters);
     }
 
     function initCategories() {
