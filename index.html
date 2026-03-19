@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Фильтр списка</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input { padding: 8px; width: 100%; margin-bottom: 20px; }
+    .item { padding: 10px; border: 1px solid #ccc; margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Поиск по фильтру</h1>
+
+  <input type="text" id="search" placeholder="Введите текст..." />
+
+  <div id="list"></div>
+
+  <script>
+    const data = [
+      "Футбол",
+      "Баскетбол",
+      "Теннис",
+      "Программирование",
+      "Дизайн",
+      "Музыка"
+    ];
+
+    const list = document.getElementById('list');
+    const search = document.getElementById('search');
+
+    function render(items) {
+      list.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.textContent = item;
+        list.appendChild(div);
+      });
+    }
+
+    search.addEventListener('input', () => {
+      const value = search.value.toLowerCase();
+      const filtered = data.filter(item =>
+        item.toLowerCase().includes(value)
+      );
+      render(filtered);
+    });
+
+    render(data);
+  </script>
+</body>
+</html>
