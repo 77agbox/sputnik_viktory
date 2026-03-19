@@ -3,175 +3,975 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Кружки</title>
+  <title>Кружки — поиск занятий для детей</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: Arial; padding: 20px; background:#f5f5f5; }
+    :root {
+      --bg: #0e0f14;
+      --surface: #16181f;
+      --surface2: #1e2029;
+      --border: rgba(255,255,255,0.07);
+      --accent: #f0c060;
+      --accent2: #e07840;
+      --text: #f0ede8;
+      --muted: #888a95;
+      --tag-bg: rgba(240,192,96,0.1);
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
 
-    .filters { display:grid; gap:10px; margin-bottom:15px; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    input, select, button {
-      padding: 10px;
-      width: 100%;
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 80px 24px 60px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(240,192,96,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 60%, rgba(224,120,64,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(240,192,96,0.1);
+      border: 1px solid rgba(240,192,96,0.2);
+      border-radius: 100px;
+      padding: 6px 16px;
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(42px, 8vw, 80px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
       font-size: 16px;
-      border-radius:8px;
-      border:1px solid #ccc;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
     }
 
-    .item {
-      padding: 15px;
-      background:white;
-      border-radius:12px;
-      margin-bottom:10px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.05);
-      position:relative;
+    /* ── SEARCH BAR ── */
+    .search-wrap {
+      max-width: 680px;
+      margin: 0 auto 12px;
+      position: relative;
     }
 
-    .title { font-weight:bold; }
-
-    .fav {
-      position:absolute;
-      top:10px;
-      right:10px;
-      cursor:pointer;
-      font-size:20px;
+    .search-wrap svg.search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
     }
 
-    .active { color: gold; }
+    .search-input {
+      width: 100%;
+      padding: 18px 60px 18px 56px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
 
-    .count { font-weight:bold; margin:10px 0; }
+    .search-input::placeholder { color: var(--muted); }
+
+    .search-input:focus {
+      border-color: rgba(240,192,96,0.4);
+      box-shadow: 0 0 0 4px rgba(240,192,96,0.08);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.08);
+      border: none;
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 6px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .search-clear:hover { background: rgba(255,255,255,0.14); color: var(--text); }
+    .search-clear.visible { display: flex; }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      max-width: 680px;
+      margin: 0 auto 40px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .stats-count {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: sticky;
+      top: 24px;
+    }
+
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .filter-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-header h3 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .filter-reset {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .filter-reset.active { opacity: 1; }
+
+    .filter-section {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-section:last-child { border-bottom: none; }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* Age pills */
+    .age-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .age-pill {
+      padding: 7px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .age-pill:hover { border-color: rgba(240,192,96,0.3); color: var(--text); }
+    .age-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0e0f14;
+    }
+
+    /* Category list */
+    .cat-list {
+      max-height: 380px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+
+    .cat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.1s;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .cat-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+
+    .cat-item.active { color: var(--accent); }
+
+    .cat-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+
+    .cat-item.active .cat-dot { background: var(--accent); }
+
+    .cat-count {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      opacity: 0.5;
+    }
+
+    /* Favorites toggle */
+    .fav-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .fav-toggle:hover { border-color: rgba(240,192,96,0.2); color: var(--text); }
+
+    .fav-toggle.active {
+      background: rgba(240,192,96,0.1);
+      border-color: rgba(240,192,96,0.3);
+      color: var(--accent);
+    }
+
+    .fav-toggle-star {
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+
+    .fav-toggle.active .fav-toggle-star { transform: scale(1.2); }
+
+    /* ── MAIN CONTENT ── */
+    .content {}
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .toolbar-left {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .toolbar-left strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* Sort */
+    .sort-select {
+      padding: 8px 36px 8px 14px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888a95' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    /* Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: relative;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: cardIn 0.35s ease both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      border-color: rgba(240,192,96,0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(240,192,96,0.15), rgba(224,120,64,0.1));
+      border: 1px solid rgba(240,192,96,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .card-info { flex: 1; min-width: 0; }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .card-category {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: 0.8;
+    }
+
+    .card-fav {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--muted);
+      transition: all 0.15s;
+      line-height: 1;
+    }
+
+    .card-fav:hover { background: rgba(240,192,96,0.1); border-color: rgba(240,192,96,0.3); color: var(--accent); }
+    .card-fav.active { background: rgba(240,192,96,0.12); border-color: rgba(240,192,96,0.3); color: var(--accent); }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: var(--surface2);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .meta-pill svg { opacity: 0.6; }
+
+    .card-address {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      display: flex;
+      gap: 6px;
+    }
+
+    .card-address svg { flex-shrink: 0; margin-top: 2px; opacity: 0.5; }
+
+    .card-teacher {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-teacher::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: rgba(240,192,96,0.08);
+      border: 1px solid rgba(240,192,96,0.15);
+      transition: all 0.15s;
+      margin-top: auto;
+      align-self: flex-start;
+    }
+
+    .card-link:hover {
+      background: rgba(240,192,96,0.15);
+      border-color: rgba(240,192,96,0.3);
+    }
+
+    /* Empty state */
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.4;
+    }
+
+    .empty h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .empty p { font-size: 14px; line-height: 1.6; }
+
+    /* Highlight */
+    .hl {
+      background: linear-gradient(135deg, rgba(240,192,96,0.3), rgba(224,120,64,0.2));
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding: 0 16px 60px;
+      }
+      .sidebar { position: static; }
+      .hero { padding: 48px 16px 40px; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Skeleton loader */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
   </style>
 </head>
 <body>
 
-<h1>Кружки</h1>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+    Москва · Каталог занятий
+  </div>
+  <h1 class="hero-title">Найди своё<br><span>призвание</span></h1>
+  <p class="hero-sub">Кружки, секции и студии для детей и взрослых. Спорт, творчество, наука — всё в одном месте.</p>
 
-<div class="filters">
-  <input type="text" id="search" placeholder="Поиск..." />
+  <div class="search-wrap">
+    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input class="search-input" id="search" type="text" placeholder="Поиск по названию, адресу, педагогу..." autocomplete="off" spellcheck="false">
+    <button class="search-clear" id="searchClear" title="Очистить">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
 
-  <select id="categoryFilter">
-    <option value="">Все категории</option>
-  </select>
-
-  <select id="ageFilter">
-    <option value="">Любой возраст</option>
-    <option value="6-10">6–10</option>
-    <option value="10-14">10–14</option>
-    <option value="14+">14+</option>
-  </select>
-
-  <button id="showFav">Показать избранное</button>
+  <div class="stats-row" id="statsRow">
+    <span id="statsCount" class="stats-count">—</span>
+    <span>кружков найдено</span>
+    <span style="margin-left:auto;" id="statsActive"></span>
+  </div>
 </div>
 
-<div class="count" id="count"></div>
-<div id="list"></div>
+<!-- MAIN LAYOUT -->
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="filter-panel">
+      <div class="filter-header">
+        <h3>Фильтры</h3>
+        <button class="filter-reset" id="filterReset">Сбросить</button>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Избранное</div>
+        <button class="fav-toggle" id="favToggle">
+          <span class="fav-toggle-star">★</span>
+          Показать избранное
+        </button>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Возраст</div>
+        <div class="age-pills" id="agePills">
+          <button class="age-pill active" data-age="">Любой</button>
+          <button class="age-pill" data-age="3-6">3–6</button>
+          <button class="age-pill" data-age="6-10">6–10</button>
+          <button class="age-pill" data-age="10-14">10–14</button>
+          <button class="age-pill" data-age="14+">14+</button>
+          <button class="age-pill" data-age="18+">18+</button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Категория</div>
+        <div class="cat-list" id="catList"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <div class="toolbar">
+      <div class="toolbar-left" id="toolbarLeft"></div>
+      <select class="sort-select" id="sortSelect">
+        <option value="default">По умолчанию</option>
+        <option value="alpha">По алфавиту</option>
+        <option value="age">По возрасту</option>
+      </select>
+    </div>
+
+    <div class="cards-grid" id="list"></div>
+  </main>
+</div>
 
 <script>
-let data = [];
-let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-let showOnlyFav = false;
+// ── DATA & STATE ──────────────────────────────────────────────────
+let allData = [];
+let favorites = JSON.parse(localStorage.getItem('krug_favorites') || '[]');
+let state = {
+  search: '',
+  age: '',
+  category: '',
+  showFav: false,
+  sort: 'default',
+};
 
-const list = document.getElementById('list');
-const search = document.getElementById('search');
-const categoryFilter = document.getElementById('categoryFilter');
-const ageFilter = document.getElementById('ageFilter');
-const showFavBtn = document.getElementById('showFav');
-const count = document.getElementById('count');
+// ── EMOJI MAP ─────────────────────────────────────────────────────
+const categoryEmoji = {
+  'Фитнес-аэробика': '🤸', 'Академический хор': '🎵', 'Спортивная аэробика': '💪',
+  'Английский язык': '🇬🇧', 'Математика': '🔢', 'Предметная область математики': '📐',
+  'Предметная область астрономия': '🔭', 'Айкидо': '🥋', 'Спортивная гимнастика': '🤼',
+  'Художественные и ремонтные работы с изделиями, состоящими из различных материалов': '🛠️',
+  'Цирковое искусство': '🎪', 'Работа с глиной, песком, тестом и пластилином': '🏺',
+  'Драматический театр': '🎭', 'Рисование': '🎨', 'Танцы': '💃', 'Музыка': '🎸',
+  'Плавание': '🏊', 'Футбол': '⚽', 'Шахматы': '♟️', 'Программирование': '💻',
+  'Робототехника': '🤖', 'Вокал': '🎤', 'Лепка': '🏺', 'Рукоделие': '🧵',
+};
 
-function toggleFavorite(id) {
+function getEmoji(cat) {
+  for (const [key, val] of Object.entries(categoryEmoji)) {
+    if (cat && cat.toLowerCase().includes(key.toLowerCase())) return val;
+  }
+  const defaults = ['🌟','🎯','📚','✨','🎓','🌈','⚡','🎠'];
+  let hash = 0;
+  if (cat) for (let i = 0; i < cat.length; i++) hash = (hash * 31 + cat.charCodeAt(i)) | 0;
+  return defaults[Math.abs(hash) % defaults.length];
+}
+
+// ── AGE MATCHING ──────────────────────────────────────────────────
+function matchAge(itemAge, filter) {
+  if (!filter) return true;
+  if (!itemAge) return false;
+  const nums = itemAge.match(/\d+/g);
+  if (!nums) return false;
+  const itemMin = +nums[0];
+  const itemMax = nums[1] ? +nums[1] : itemMin;
+
+  if (filter === '18+') return itemMin >= 18 || itemMax >= 18;
+  if (filter === '14+') return itemMax >= 14;
+  if (filter === '3-6')  return itemMin <= 6 && itemMax >= 3;
+  if (filter === '6-10') return itemMin <= 10 && itemMax >= 6;
+  if (filter === '10-14') return itemMin <= 14 && itemMax >= 10;
+  return false;
+}
+
+// ── HIGHLIGHT ─────────────────────────────────────────────────────
+function highlight(text, query) {
+  if (!query || !text) return text || '';
+  const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return String(text).replace(re, '<mark class="hl">$1</mark>');
+}
+
+// ── RENDER CARD ───────────────────────────────────────────────────
+function renderCard(item, idx) {
+  const id = item['Ссылка'];
+  const isFav = favorites.includes(id);
+  const q = state.search;
+
+  const title    = highlight(item['Наименование детского объединения'], q);
+  const cat      = item['Наименование третьего уровня РБНДО'] || '';
+  const age      = item['Возраст'] || '';
+  const address  = highlight(item['Адрес предоставления услуги'], q);
+  const teacher  = highlight(item['Педагог'], q);
+  const link     = item['Ссылка'];
+  const emoji    = getEmoji(cat);
+
+  const delay = Math.min(idx * 30, 300);
+
+  return `
+    <div class="card" style="animation-delay:${delay}ms">
+      <button class="card-fav ${isFav ? 'active' : ''}" onclick="toggleFav('${id.replace(/'/g,"\\'")}')">
+        ${isFav ? '★' : '☆'}
+      </button>
+      <div class="card-top">
+        <div class="card-icon">${emoji}</div>
+        <div class="card-info">
+          <div class="card-title">${title}</div>
+          <div class="card-category">${cat}</div>
+        </div>
+      </div>
+      <div class="card-meta">
+        ${age ? `<span class="meta-pill">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          ${age} лет
+        </span>` : ''}
+      </div>
+      ${address ? `<div class="card-address">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>${address}</span>
+      </div>` : ''}
+      ${teacher ? `<div class="card-teacher">${teacher}</div>` : ''}
+      ${link ? `<a class="card-link" href="${link}" target="_blank" rel="noopener">
+        Записаться
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>` : ''}
+    </div>
+  `;
+}
+
+// ── APPLY FILTERS ─────────────────────────────────────────────────
+function applyFilters() {
+  const text = state.search.toLowerCase();
+
+  let filtered = allData.filter(item => {
+    if (text) {
+      const t = [
+        item['Наименование детского объединения'],
+        item['Наименование третьего уровня РБНДО'],
+        item['Адрес предоставления услуги'],
+        item['Педагог'],
+      ].join(' ').toLowerCase();
+      if (!t.includes(text)) return false;
+    }
+    if (state.category && item['Наименование третьего уровня РБНДО'] !== state.category) return false;
+    if (!matchAge(item['Возраст'], state.age)) return false;
+    if (state.showFav && !favorites.includes(item['Ссылка'])) return false;
+    return true;
+  });
+
+  // Sort
+  if (state.sort === 'alpha') {
+    filtered.sort((a, b) => (a['Наименование детского объединения'] || '').localeCompare(b['Наименование детского объединения'] || '', 'ru'));
+  } else if (state.sort === 'age') {
+    filtered.sort((a, b) => {
+      const an = (a['Возраст'] || '').match(/\d+/);
+      const bn = (b['Возраст'] || '').match(/\d+/);
+      return (an ? +an[0] : 99) - (bn ? +bn[0] : 99);
+    });
+  }
+
+  renderList(filtered);
+  updateStats(filtered.length);
+}
+
+// ── RENDER LIST ───────────────────────────────────────────────────
+function renderList(items) {
+  const list = document.getElementById('list');
+
+  if (items.length === 0) {
+    list.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🔍</div>
+        <h3>Ничего не найдено</h3>
+        <p>Попробуйте изменить фильтры<br>или поисковый запрос</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = items.map((item, i) => renderCard(item, i)).join('');
+
+  document.getElementById('toolbarLeft').innerHTML =
+    `<strong>${items.length}</strong> ${plural(items.length, 'кружок', 'кружка', 'кружков')}`;
+}
+
+function plural(n, one, few, many) {
+  const m = n % 100;
+  if (m >= 11 && m <= 14) return many;
+  const r = n % 10;
+  if (r === 1) return one;
+  if (r >= 2 && r <= 4) return few;
+  return many;
+}
+
+function updateStats(count) {
+  document.getElementById('statsCount').textContent = count;
+  const active = [];
+  if (state.search) active.push(`«${state.search}»`);
+  if (state.age) active.push(`возраст ${state.age}`);
+  if (state.category) active.push(state.category);
+  if (state.showFav) active.push('избранное');
+  document.getElementById('statsActive').textContent = active.length ? '· ' + active.join(', ') : '';
+}
+
+// ── CATEGORIES ────────────────────────────────────────────────────
+function initCategories() {
+  const counts = {};
+  allData.forEach(item => {
+    const c = item['Наименование третьего уровня РБНДО'];
+    if (c) counts[c] = (counts[c] || 0) + 1;
+  });
+
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const catList = document.getElementById('catList');
+
+  catList.innerHTML = sorted.map(([cat, cnt]) => `
+    <div class="cat-item" data-cat="${cat.replace(/"/g,'&quot;')}" onclick="selectCategory(this)">
+      <span class="cat-dot"></span>
+      <span>${cat}</span>
+      <span class="cat-count">${cnt}</span>
+    </div>
+  `).join('');
+}
+
+function selectCategory(el) {
+  const cat = el.dataset.cat;
+  const same = state.category === cat;
+  state.category = same ? '' : cat;
+
+  document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+  if (!same) el.classList.add('active');
+
+  updateResetBtn();
+  applyFilters();
+}
+
+// ── FAVORITES ─────────────────────────────────────────────────────
+function toggleFav(id) {
   if (favorites.includes(id)) {
     favorites = favorites.filter(f => f !== id);
   } else {
     favorites.push(id);
   }
-  localStorage.setItem('favorites', JSON.stringify(favorites));
+  localStorage.setItem('krug_favorites', JSON.stringify(favorites));
   applyFilters();
 }
 
-function matchAge(itemAge, filter) {
-  if (!filter) return true;
-  if (!itemAge) return false;
-
-  if (filter === '14+') return itemAge.includes('14') || itemAge.includes('15') || itemAge.includes('16') || itemAge.includes('17') || itemAge.includes('18');
-
-  const [min, max] = filter.split('-').map(Number);
-  const nums = itemAge.match(/\d+/g);
-  if (!nums) return false;
-
-  const itemMin = Number(nums[0]);
-  return itemMin >= min && itemMin <= max;
+// ── RESET ─────────────────────────────────────────────────────────
+function updateResetBtn() {
+  const hasFilter = state.search || state.age || state.category || state.showFav;
+  document.getElementById('filterReset').classList.toggle('active', !!hasFilter);
 }
 
-function render(items) {
-  list.innerHTML = '';
-  count.textContent = `Найдено: ${items.length}`;
-
-  items.forEach(item => {
-    const id = item['Ссылка'];
-    const isFav = favorites.includes(id);
-
-    const div = document.createElement('div');
-    div.className = 'item';
-
-    div.innerHTML = `
-      <div class="fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${id}')">★</div>
-      <div class="title">${item['Наименование детского объединения']}</div>
-      <div>${item['Наименование третьего уровня РБНДО']}</div>
-      <div>${item['Возраст']}</div>
-      <div>${item['Адрес предоставления услуги']}</div>
-      <a href="${item['Ссылка']}" target="_blank">Подробнее</a>
-    `;
-
-    list.appendChild(div);
-  });
+function resetFilters() {
+  state = { search: '', age: '', category: '', showFav: false, sort: state.sort };
+  document.getElementById('search').value = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  document.querySelectorAll('.age-pill').forEach(p => p.classList.toggle('active', p.dataset.age === ''));
+  document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('favToggle').classList.remove('active');
+  document.getElementById('favToggle').textContent = '';
+  document.getElementById('favToggle').innerHTML = '<span class="fav-toggle-star">★</span> Показать избранное';
+  updateResetBtn();
+  applyFilters();
 }
 
-function applyFilters() {
-  const text = search.value.toLowerCase();
-  const category = categoryFilter.value;
-  const age = ageFilter.value;
-
-  const filtered = data.filter(item => {
-    const t = Object.values(item).join(' ').toLowerCase();
-    const matchesText = t.includes(text);
-    const matchesCategory = !category || item['Наименование третьего уровня РБНДО'] === category;
-    const matchesAge = matchAge(item['Возраст'], age);
-    const matchesFav = !showOnlyFav || favorites.includes(item['Ссылка']);
-
-    return matchesText && matchesCategory && matchesAge && matchesFav;
-  });
-
-  render(filtered);
-}
-
-function initCategories() {
-  const cats = [...new Set(data.map(i => i['Наименование третьего уровня РБНДО']))];
-  cats.sort();
-
-  cats.forEach(cat => {
-    const o = document.createElement('option');
-    o.value = cat;
-    o.textContent = cat;
-    categoryFilter.appendChild(o);
-  });
-}
-
-showFavBtn.addEventListener('click', () => {
-  showOnlyFav = !showOnlyFav;
-  showFavBtn.textContent = showOnlyFav ? 'Показать все' : 'Показать избранное';
+// ── EVENT BINDINGS ────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  state.search = e.target.value;
+  document.getElementById('searchClear').classList.toggle('visible', !!e.target.value);
+  updateResetBtn();
   applyFilters();
 });
 
-search.addEventListener('input', applyFilters);
-categoryFilter.addEventListener('change', applyFilters);
-ageFilter.addEventListener('change', applyFilters);
+document.getElementById('searchClear').addEventListener('click', () => {
+  document.getElementById('search').value = '';
+  state.search = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  updateResetBtn();
+  applyFilters();
+});
 
+document.getElementById('agePills').addEventListener('click', e => {
+  const pill = e.target.closest('.age-pill');
+  if (!pill) return;
+  document.querySelectorAll('.age-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  state.age = pill.dataset.age;
+  updateResetBtn();
+  applyFilters();
+});
+
+document.getElementById('favToggle').addEventListener('click', () => {
+  state.showFav = !state.showFav;
+  const btn = document.getElementById('favToggle');
+  btn.classList.toggle('active', state.showFav);
+  btn.innerHTML = state.showFav
+    ? '<span class="fav-toggle-star">★</span> Только избранное'
+    : '<span class="fav-toggle-star">★</span> Показать избранное';
+  updateResetBtn();
+  applyFilters();
+});
+
+document.getElementById('filterReset').addEventListener('click', resetFilters);
+
+document.getElementById('sortSelect').addEventListener('change', e => {
+  state.sort = e.target.value;
+  applyFilters();
+});
+
+// ── LOAD DATA ─────────────────────────────────────────────────────
 fetch('./data.json')
   .then(r => r.json())
   .then(json => {
-    data = json;
+    allData = json;
     initCategories();
-    render(data);
+    applyFilters();
+  })
+  .catch(() => {
+    document.getElementById('list').innerHTML =
+      '<div class="empty"><div class="empty-icon">⚠️</div><h3>Не удалось загрузить данные</h3><p>Проверьте, что файл data.json находится рядом с index.html</p></div>';
   });
 </script>
 
