@@ -53,7 +53,7 @@
     }
 
     // Загружаем данные из JSON
-    fetch('data.json')
+    fetch('./data.json')
       .then(res => res.json())
       .then(json => {
         data = json;
