@@ -7,887 +7,180 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-
   <style>
     :root {
-      --bg: #faf8f5;
-      --surface: #ffffff;
-      --surface2: #f3f0eb;
-      --border: rgba(60,40,20,0.1);
-      --accent: #e8921a;
-      --accent2: #c96d10;
-      --green: #5aab7a;
-      --green2: #3d8a5c;
-      --lilac: #9b79a8;
-      --lilac2: #7a5889;
-      --text: #2c2416;
-      --muted: #8a7a68;
-      --tag-bg: rgba(232,146,26,0.1);
-      --radius: 16px;
-      --shadow: 0 8px 32px rgba(60,40,10,0.12);
+      --bg: #faf8f5; --surface: #ffffff; --surface2: #f3f0eb;
+      --border: rgba(60,40,20,0.1); --accent: #e8921a; --accent2: #c96d10;
+      --green2: #3d8a5c; --lilac2: #7a5889;
+      --text: #2c2416; --muted: #8a7a68; --radius: 16px;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Manrope', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ── TOPBAR ── */
-    .topbar {
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 72px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(60,40,10,0.06);
-    }
-
-    .topbar-logo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-    }
-
-    .topbar-logo img {
-      height: 48px;
-      width: auto;
-    }
-
-    .topbar-name {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-
-    .topbar-name strong {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      font-family: 'Playfair Display', serif;
-    }
-
-    .topbar-name span {
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 500;
-      letter-spacing: 0.04em;
-    }
-
-    .topbar-badge {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: rgba(232,146,26,0.1);
-      border: 1px solid rgba(232,146,26,0.2);
-      border-radius: 6px;
-      padding: 4px 10px;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      padding: 72px 24px 56px;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 90% 70% at 50% -5%, rgba(232,146,26,0.12) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 40% at 15% 80%, rgba(90,171,122,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 35% 40% at 85% 70%, rgba(155,121,168,0.08) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: rgba(232,146,26,0.1);
-      border: 1px solid rgba(232,146,26,0.2);
-      border-radius: 100px;
-      padding: 6px 16px;
-      margin-bottom: 24px;
-    }
-
-    .hero-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(38px, 7vw, 72px);
-      font-weight: 900;
-      line-height: 0.97;
-      letter-spacing: -0.02em;
-      margin-bottom: 20px;
-      color: var(--text);
-    }
-
-    .hero-title span {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-sub {
-      font-size: 16px;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto 48px;
-      line-height: 1.7;
-    }
-
-    .hero-chips {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 40px;
-    }
-
-    .hero-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 100px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--muted);
-    }
-
-    .hero-chip.orange { border-color: rgba(232,146,26,0.25); color: var(--accent); background: rgba(232,146,26,0.06); }
-    .hero-chip.green  { border-color: rgba(90,171,122,0.25); color: var(--green2); background: rgba(90,171,122,0.06); }
-    .hero-chip.lilac  { border-color: rgba(155,121,168,0.25); color: var(--lilac2); background: rgba(155,121,168,0.06); }
-
-    /* ── SEARCH BAR ── */
-    .search-wrap {
-      max-width: 680px;
-      margin: 0 auto 12px;
-      position: relative;
-    }
-
-    .search-wrap svg.search-icon {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      pointer-events: none;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 18px 60px 18px 56px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .search-input::placeholder { color: var(--muted); }
-
-    .search-input:focus {
-      border-color: rgba(232,146,26,0.4);
-      box-shadow: 0 0 0 4px rgba(232,146,26,0.08);
-    }
-
-    .search-clear {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255,255,255,0.08);
-      border: none;
-      border-radius: 8px;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 6px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .search-clear:hover { background: rgba(255,255,255,0.14); color: var(--text); }
-    .search-clear.visible { display: flex; }
-
-    /* ── STATS ROW ── */
-    .stats-row {
-      max-width: 680px;
-      margin: 0 auto 40px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .stats-count {
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 15px;
-    }
-
-    /* ── LAYOUT ── */
-    .layout {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 24px 80px;
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 32px;
-      align-items: start;
-    }
-
-    /* ── SIDEBAR ── */
-    .sidebar {
-      position: sticky;
-      top: 24px;
-    }
-
-    .filter-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .filter-header {
-      padding: 20px 20px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .filter-header h3 {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .filter-reset {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 2px 0;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .filter-reset.active { opacity: 1; }
-
-    .filter-section {
-      padding: 20px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .filter-section:last-child { border-bottom: none; }
-
-    .filter-label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    /* Age pills */
-    .age-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .age-pill {
-      padding: 7px 14px;
-      border-radius: 100px;
-      font-size: 13px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .age-pill:hover { border-color: rgba(232,146,26,0.3); color: var(--text); }
-    .age-pill.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #ffffff;
-    }
-
-    .cat-list {
-      max-height: 380px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(60,40,10,0.1) transparent;
-    }
-
-    .cat-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.1s;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    .cat-item:hover { background: rgba(60,40,10,0.04); color: var(--text); }
-
-    .cat-item.active { color: var(--accent); }
-
-    .cat-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-      flex-shrink: 0;
-      transition: background 0.15s;
-    }
-
-    .cat-item.active .cat-dot { background: var(--accent); }
-
-    .cat-count {
-      margin-left: auto;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-      opacity: 0.5;
-    }
-
-    /* Favorites toggle */
-    .fav-toggle {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: 'Manrope', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .fav-toggle:hover { border-color: rgba(232,146,26,0.2); color: var(--text); }
-
-    .fav-toggle.active {
-      background: rgba(232,146,26,0.08);
-      border-color: rgba(232,146,26,0.3);
-      color: var(--accent);
-    }
-
-    .fav-toggle-star {
-      font-size: 16px;
-      transition: transform 0.2s;
-    }
-
-    .fav-toggle.active .fav-toggle-star { transform: scale(1.2); }
-
-    /* ── MAIN CONTENT ── */
-    .content {}
-
-    /* Toolbar */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .toolbar-left {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .toolbar-left strong {
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    /* Sort */
-    .sort-select {
-      padding: 8px 36px 8px 14px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      cursor: pointer;
-      outline: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888a95' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-    }
-
-    /* Grid */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-    }
-
-    /* ── CARD ── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      position: relative;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-      cursor: default;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      animation: cardIn 0.35s ease both;
-    }
-
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .card:hover {
-      border-color: rgba(232,146,26,0.25);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(60,40,10,0.1);
-    }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-
-    .card-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(232,146,26,0.12), rgba(90,171,122,0.08));
-      border: 1px solid rgba(232,146,26,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    .card-info { flex: 1; min-width: 0; }
-
-    .card-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.4;
-      margin-bottom: 4px;
-    }
-
-    .card-category {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--accent);
-      opacity: 0.8;
-    }
-
-    .card-fav {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 6px 8px;
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--muted);
-      transition: all 0.15s;
-      line-height: 1;
-    }
-
-    .card-fav:hover { background: rgba(232,146,26,0.1); border-color: rgba(232,146,26,0.3); color: var(--accent); }
-    .card-fav.active { background: rgba(232,146,26,0.1); border-color: rgba(232,146,26,0.3); color: var(--accent); }
-
-    .card-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .meta-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      background: var(--surface2);
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    .meta-pill svg { opacity: 0.6; }
-
-    .card-address {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-      display: flex;
-      gap: 6px;
-    }
-
-    .card-address svg { flex-shrink: 0; margin-top: 2px; opacity: 0.5; }
-
-    .card-teacher {
-      font-size: 12px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .card-teacher::before {
-      content: '';
-      display: block;
-      width: 20px;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .card-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
-      text-decoration: none;
-      padding: 10px 16px;
-      border-radius: 10px;
-      background: rgba(232,146,26,0.08);
-      border: 1px solid rgba(232,146,26,0.2);
-      transition: all 0.15s;
-      margin-top: auto;
-      align-self: flex-start;
-    }
-
-    .card-link:hover {
-      background: rgba(232,146,26,0.15);
-      border-color: rgba(232,146,26,0.35);
-    }
-
-    /* ── FOOTER ── */
-    .footer {
-      background: #fff;
-      border-top: 1px solid var(--border);
-      padding: 28px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .footer-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .footer-left img {
-      height: 36px;
-      opacity: 0.7;
-    }
-
-    .footer-org {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .footer-copy {
-      font-size: 11px;
-      color: var(--muted);
-      opacity: 0.6;
-    }
-
-    /* Empty state */
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 80px 20px;
-      color: var(--muted);
-    }
-
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.4;
-    }
-
-    .empty h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .empty p { font-size: 14px; line-height: 1.6; }
-
-    /* Highlight */
-    .hl {
-      background: rgba(232,146,26,0.22);
-      border-radius: 3px;
-      padding: 0 2px;
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(60,40,10,0.12); border-radius: 4px; }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .layout {
-        grid-template-columns: 1fr;
-        padding: 0 16px 80px;
-      }
-      .sidebar { display: none; }
-      .hero { padding: 40px 16px 32px; }
-      .cards-grid { grid-template-columns: 1fr; }
-      .topbar { padding: 0 16px; }
-      .topbar-badge { display: none; }
-    }
-
-    /* ── MOBILE FILTER BUTTON ── */
-    .mobile-filter-btn {
-      display: none;
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 200;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 100px;
-      padding: 14px 28px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 8px 28px rgba(232,146,26,0.45);
-      gap: 10px;
-      align-items: center;
-      transition: transform 0.15s, box-shadow 0.15s;
-      white-space: nowrap;
-    }
-
-    .mobile-filter-btn:active { transform: translateX(-50%) scale(0.96); }
-
-    .mobile-filter-btn .btn-badge {
-      background: #fff;
-      color: var(--accent);
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 7px;
-      margin-left: 2px;
-    }
-
-    @media (max-width: 768px) {
-      .mobile-filter-btn { display: flex; }
-    }
-
-    /* ── DRAWER OVERLAY ── */
-    .drawer-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(30,20,10,0.5);
-      backdrop-filter: blur(3px);
-      z-index: 300;
-      opacity: 0;
-      transition: opacity 0.25s;
-    }
-
-    .drawer-overlay.open {
-      display: block;
-      opacity: 1;
-    }
-
-    /* ── DRAWER PANEL ── */
-    .drawer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 400;
-      background: var(--surface);
-      border-radius: 24px 24px 0 0;
-      max-height: 88vh;
-      display: flex;
-      flex-direction: column;
-      transform: translateY(100%);
-      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
-      box-shadow: 0 -8px 48px rgba(60,40,10,0.18);
-    }
-
-    .drawer.open {
-      transform: translateY(0);
-    }
-
-    .drawer-handle {
-      width: 36px;
-      height: 4px;
-      background: var(--border);
-      border-radius: 100px;
-      margin: 12px auto 0;
-      flex-shrink: 0;
-    }
-
-    .drawer-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px 12px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .drawer-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .drawer-close {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 6px 8px;
-      font-size: 13px;
-      line-height: 1;
-      transition: background 0.15s;
-    }
-
-    .drawer-close:hover { background: var(--border); }
-
-    .drawer-body {
-      overflow-y: auto;
-      flex: 1;
-      padding: 4px 0 8px;
-      overscroll-behavior: contain;
-    }
-
-    .drawer-footer {
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .drawer-apply {
-      flex: 1;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .drawer-apply:hover { background: var(--accent2); }
-
-    .drawer-reset-btn {
-      background: var(--surface2);
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 18px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .drawer-reset-btn:hover { background: var(--border); color: var(--text); }
-
-    /* Skeleton loader */
-    .skeleton {
-      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-      border-radius: 8px;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
+    body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+    /* TOPBAR */
+    .topbar { background:#fff; border-bottom:1px solid var(--border); padding:0 32px; display:flex; align-items:center; justify-content:space-between; height:72px; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(60,40,10,0.06); }
+    .topbar-logo { display:flex; align-items:center; gap:14px; text-decoration:none; }
+    .topbar-logo img { height:48px; width:auto; }
+    .topbar-name { display:flex; flex-direction:column; line-height:1.2; }
+    .topbar-name strong { font-size:15px; font-weight:700; color:var(--text); font-family:'Playfair Display',serif; }
+    .topbar-name span { font-size:11px; color:var(--muted); font-weight:500; }
+    .topbar-badge { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); background:rgba(232,146,26,0.1); border:1px solid rgba(232,146,26,0.2); border-radius:6px; padding:4px 10px; }
+
+    /* HERO */
+    .hero { position:relative; padding:72px 24px 56px; text-align:center; overflow:hidden; }
+    .hero::before { content:''; position:absolute; inset:0; pointer-events:none; background: radial-gradient(ellipse 90% 70% at 50% -5%,rgba(232,146,26,0.12) 0%,transparent 65%), radial-gradient(ellipse 40% 40% at 15% 80%,rgba(90,171,122,0.08) 0%,transparent 60%), radial-gradient(ellipse 35% 40% at 85% 70%,rgba(155,121,168,0.08) 0%,transparent 60%); }
+    .hero-eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); background:rgba(232,146,26,0.1); border:1px solid rgba(232,146,26,0.2); border-radius:100px; padding:6px 16px; margin-bottom:24px; }
+    .hero-title { font-family:'Playfair Display',serif; font-size:clamp(38px,7vw,72px); font-weight:900; line-height:0.97; letter-spacing:-0.02em; margin-bottom:20px; color:var(--text); }
+    .hero-title span { background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .hero-sub { font-size:16px; color:var(--muted); max-width:520px; margin:0 auto 36px; line-height:1.7; }
+    .hero-chips { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:40px; }
+    .hero-chip { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:100px; font-size:12px; font-weight:600; border:1px solid var(--border); background:var(--surface); color:var(--muted); }
+    .hero-chip.orange { border-color:rgba(232,146,26,0.25); color:var(--accent); background:rgba(232,146,26,0.06); }
+    .hero-chip.green  { border-color:rgba(61,138,92,0.25); color:var(--green2); background:rgba(61,138,92,0.06); }
+    .hero-chip.lilac  { border-color:rgba(122,88,137,0.25); color:var(--lilac2); background:rgba(122,88,137,0.06); }
+
+    /* SEARCH */
+    .search-wrap { max-width:680px; margin:0 auto 12px; position:relative; }
+    .search-wrap svg.search-icon { position:absolute; left:20px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+    .search-input { width:100%; padding:18px 60px 18px 56px; font-family:'Manrope',sans-serif; font-size:15px; font-weight:500; background:var(--surface); border:1px solid var(--border); border-radius:14px; color:var(--text); outline:none; transition:border-color 0.2s,box-shadow 0.2s; }
+    .search-input::placeholder { color:var(--muted); }
+    .search-input:focus { border-color:rgba(232,146,26,0.4); box-shadow:0 0 0 4px rgba(232,146,26,0.08); }
+    .search-clear { position:absolute; right:16px; top:50%; transform:translateY(-50%); background:rgba(60,40,10,0.06); border:none; border-radius:8px; color:var(--muted); cursor:pointer; padding:6px; display:none; align-items:center; justify-content:center; transition:background 0.15s; }
+    .search-clear:hover { background:rgba(60,40,10,0.12); color:var(--text); }
+    .search-clear.visible { display:flex; }
+    .stats-row { max-width:680px; margin:0 auto 40px; display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); }
+    .stats-count { font-weight:700; color:var(--accent); font-size:15px; }
+
+    /* LAYOUT */
+    .layout { max-width:1280px; margin:0 auto; padding:0 24px 80px; display:grid; grid-template-columns:280px 1fr; gap:32px; align-items:start; }
+
+    /* SIDEBAR */
+    .sidebar { position:sticky; top:88px; }
+    .filter-panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    .filter-header { padding:20px 20px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .filter-header h3 { font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+    .filter-reset { font-size:12px; font-weight:600; color:var(--accent); background:none; border:none; cursor:pointer; padding:2px 0; opacity:0; transition:opacity 0.2s; }
+    .filter-reset.active { opacity:1; }
+    .filter-section { padding:20px; border-bottom:1px solid var(--border); }
+    .filter-section:last-child { border-bottom:none; }
+    .filter-label { font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+
+    /* AGE PILLS */
+    .age-pills { display:flex; flex-wrap:wrap; gap:8px; }
+    .age-pill { padding:7px 14px; border-radius:100px; font-size:13px; font-weight:600; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; font-family:'Manrope',sans-serif; }
+    .age-pill:hover { border-color:rgba(232,146,26,0.3); color:var(--text); }
+    .age-pill.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+    /* CAT LIST */
+    .cat-list { max-height:380px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(60,40,10,0.1) transparent; }
+    .cat-item { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:8px; cursor:pointer; transition:background 0.1s; font-size:13px; font-weight:500; color:var(--muted); }
+    .cat-item:hover { background:rgba(60,40,10,0.04); color:var(--text); }
+    .cat-item.active { color:var(--accent); }
+    .cat-dot { width:6px; height:6px; border-radius:50%; background:var(--border); flex-shrink:0; transition:background 0.15s; }
+    .cat-item.active .cat-dot { background:var(--accent); }
+    .cat-count { margin-left:auto; font-size:11px; font-weight:700; color:var(--muted); opacity:0.5; }
+
+    /* FAV TOGGLE */
+    .fav-toggle { width:100%; display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; background:var(--surface2); border:1px solid var(--border); color:var(--muted); font-family:'Manrope',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .fav-toggle:hover { border-color:rgba(232,146,26,0.2); color:var(--text); }
+    .fav-toggle.active { background:rgba(232,146,26,0.08); border-color:rgba(232,146,26,0.3); color:var(--accent); }
+    .fav-toggle-star { font-size:16px; transition:transform 0.2s; }
+    .fav-toggle.active .fav-toggle-star { transform:scale(1.2); }
+
+    /* TOOLBAR */
+    .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .toolbar-left { font-size:13px; color:var(--muted); }
+    .toolbar-left strong { color:var(--text); font-weight:700; }
+    .sort-select { padding:8px 36px 8px 14px; font-family:'Manrope',sans-serif; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--muted); cursor:pointer; outline:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a7a68' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; }
+
+    /* ACTIVE FILTER TAGS */
+    .active-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; min-height:0; }
+    .filter-tag { display:inline-flex; align-items:center; gap:6px; padding:5px 10px 5px 12px; border-radius:100px; font-size:12px; font-weight:600; background:rgba(232,146,26,0.1); border:1px solid rgba(232,146,26,0.25); color:var(--accent); }
+    .filter-tag-remove { background:none; border:none; cursor:pointer; color:var(--accent); padding:0; display:flex; align-items:center; opacity:0.7; transition:opacity 0.15s; font-size:14px; line-height:1; }
+    .filter-tag-remove:hover { opacity:1; }
+
+    /* CARDS */
+    .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; position:relative; cursor:default; display:flex; flex-direction:column; gap:12px; transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s; animation:cardIn 0.3s ease both; }
+    @keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .card:hover { border-color:rgba(232,146,26,0.25); transform:translateY(-2px); box-shadow:0 12px 32px rgba(60,40,10,0.08); }
+    .card-top { display:flex; align-items:flex-start; gap:14px; }
+    .card-icon { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,rgba(232,146,26,0.12),rgba(90,171,122,0.08)); border:1px solid rgba(232,146,26,0.15); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .card-info { flex:1; min-width:0; }
+    .card-title { font-size:14px; font-weight:700; color:var(--text); line-height:1.4; margin-bottom:4px; }
+    .card-category { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); opacity:0.8; }
+    .card-fav { position:absolute; top:16px; right:16px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:6px 8px; cursor:pointer; font-size:14px; color:var(--muted); transition:all 0.15s; line-height:1; }
+    .card-fav:hover, .card-fav.active { background:rgba(232,146,26,0.1); border-color:rgba(232,146,26,0.3); color:var(--accent); }
+    .card-meta { display:flex; flex-wrap:wrap; gap:8px; }
+    .meta-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:6px; background:var(--surface2); font-size:12px; font-weight:500; color:var(--muted); }
+    .card-address { font-size:13px; color:var(--muted); line-height:1.5; display:flex; gap:6px; }
+    .card-address svg { flex-shrink:0; margin-top:2px; opacity:0.4; }
+    .card-teacher { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+    .card-teacher::before { content:''; display:block; width:20px; height:1px; background:var(--border); }
+    .card-link { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; padding:10px 16px; border-radius:10px; background:rgba(232,146,26,0.08); border:1px solid rgba(232,146,26,0.2); transition:all 0.15s; margin-top:auto; align-self:flex-start; }
+    .card-link:hover { background:rgba(232,146,26,0.15); border-color:rgba(232,146,26,0.35); }
+
+    /* SKELETON */
+    .skeleton-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; gap:14px; }
+    .skel { border-radius:8px; background:linear-gradient(90deg,var(--surface2) 25%,#ede8e0 50%,var(--surface2) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* EMPTY */
+    .empty { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted); }
+    .empty-icon { font-size:48px; margin-bottom:16px; opacity:0.4; }
+    .empty h3 { font-size:18px; font-weight:700; color:var(--text); margin-bottom:8px; }
+    .empty p { font-size:14px; line-height:1.6; }
+
+    /* HIGHLIGHT */
+    .hl { background:rgba(232,146,26,0.22); border-radius:3px; padding:0 2px; }
+
+    /* FOOTER */
+    .footer { background:#fff; border-top:1px solid var(--border); padding:28px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+    .footer-left { display:flex; align-items:center; gap:12px; }
+    .footer-left img { height:36px; opacity:0.7; }
+    .footer-org { font-size:12px; font-weight:600; color:var(--muted); line-height:1.4; }
+    .footer-copy { font-size:11px; color:var(--muted); opacity:0.6; }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-thumb { background:rgba(60,40,10,0.12); border-radius:4px; }
+
+    /* MOBILE */
+    @media (max-width:768px) {
+      .topbar { padding:0 16px; }
+      .topbar-badge { display:none; }
+      .hero { padding:40px 16px 32px; }
+      .layout { grid-template-columns:1fr; padding:0 16px 100px; }
+      .sidebar { display:none; }
+      .cards-grid { grid-template-columns:1fr; }
+      .footer { padding:20px 16px; flex-direction:column; align-items:flex-start; }
+    }
+
+    /* MOBILE FILTER BUTTON */
+    .mobile-filter-btn { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:200; background:var(--accent); color:#fff; border:none; border-radius:100px; padding:14px 28px; font-family:'Manrope',sans-serif; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 8px 28px rgba(232,146,26,0.45); align-items:center; gap:10px; white-space:nowrap; transition:transform 0.15s,box-shadow 0.15s; }
+    .mobile-filter-btn:active { transform:translateX(-50%) scale(0.96); }
+    .mobile-filter-btn .btn-badge { background:#fff; color:var(--accent); border-radius:100px; font-size:11px; font-weight:800; padding:2px 7px; }
+    @media (max-width:768px) { .mobile-filter-btn { display:flex; } }
+
+    /* DRAWER */
+    .drawer-overlay { display:none; position:fixed; inset:0; background:rgba(30,20,10,0.5); backdrop-filter:blur(3px); z-index:300; opacity:0; transition:opacity 0.25s; }
+    .drawer-overlay.open { display:block; opacity:1; }
+    .drawer { position:fixed; bottom:0; left:0; right:0; z-index:400; background:var(--surface); border-radius:24px 24px 0 0; max-height:88vh; display:flex; flex-direction:column; transform:translateY(100%); transition:transform 0.32s cubic-bezier(0.32,0.72,0,1); box-shadow:0 -8px 48px rgba(60,40,10,0.18); }
+    .drawer.open { transform:translateY(0); }
+    .drawer-handle { width:36px; height:4px; background:var(--border); border-radius:100px; margin:12px auto 0; flex-shrink:0; }
+    .drawer-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 12px; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .drawer-title { font-size:16px; font-weight:700; color:var(--text); }
+    .drawer-close { background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--muted); cursor:pointer; padding:6px 10px; font-size:13px; line-height:1; }
+    .drawer-body { overflow-y:auto; flex:1; overscroll-behavior:contain; }
+    .drawer-footer { padding:16px 20px; border-top:1px solid var(--border); display:flex; gap:10px; flex-shrink:0; }
+    .drawer-apply { flex:1; background:var(--accent); color:#fff; border:none; border-radius:12px; padding:14px; font-family:'Manrope',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.15s; }
+    .drawer-apply:hover { background:var(--accent2); }
+    .drawer-reset-btn { background:var(--surface2); color:var(--muted); border:1px solid var(--border); border-radius:12px; padding:14px 18px; font-family:'Manrope',sans-serif; font-size:14px; font-weight:600; cursor:pointer; }
   </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <header class="topbar">
   <a class="topbar-logo" href="#">
     <img src="./Victoria_logo-02.png" alt="Виктория">
@@ -899,7 +192,6 @@
   <div class="topbar-badge">Каталог кружков</div>
 </header>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-eyebrow">
     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
@@ -907,7 +199,6 @@
   </div>
   <h1 class="hero-title">Найди своё<br><span>призвание</span></h1>
   <p class="hero-sub">Кружки, секции и студии Детско-юношеского центра «Виктория» для детей и взрослых. Спорт, творчество, наука — всё в одном месте.</p>
-
   <div class="hero-chips">
     <span class="hero-chip orange">🏅 Спорт и физкультура</span>
     <span class="hero-chip green">🎨 Творчество и искусство</span>
@@ -915,42 +206,33 @@
     <span class="hero-chip">🎭 Театр и музыка</span>
     <span class="hero-chip">🌍 Языки и культура</span>
   </div>
-
   <div class="search-wrap">
-    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
+    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input class="search-input" id="search" type="text" placeholder="Поиск по названию, адресу, педагогу..." autocomplete="off" spellcheck="false">
-    <button class="search-clear" id="searchClear" title="Очистить">
+    <button class="search-clear" id="searchClear">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
-
-  <div class="stats-row" id="statsRow">
+  <div class="stats-row">
     <span id="statsCount" class="stats-count">—</span>
     <span>кружков найдено</span>
-    <span style="margin-left:auto;" id="statsActive"></span>
+    <span style="margin-left:auto" id="statsActive"></span>
   </div>
 </div>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="filter-panel">
       <div class="filter-header">
         <h3>Фильтры</h3>
         <button class="filter-reset" id="filterReset">Сбросить</button>
       </div>
-
       <div class="filter-section">
         <div class="filter-label">Избранное</div>
         <button class="fav-toggle" id="favToggle">
-          <span class="fav-toggle-star">★</span>
-          Показать избранное
+          <span class="fav-toggle-star">★</span>Показать избранное
         </button>
       </div>
-
       <div class="filter-section">
         <div class="filter-label">Возраст</div>
         <div class="age-pills" id="agePills">
@@ -962,7 +244,6 @@
           <button class="age-pill" data-age="18+">18+</button>
         </div>
       </div>
-
       <div class="filter-section">
         <div class="filter-label">Категория</div>
         <div class="cat-list" id="catList"></div>
@@ -970,7 +251,6 @@
     </div>
   </aside>
 
-  <!-- CONTENT -->
   <main class="content">
     <div class="toolbar">
       <div class="toolbar-left" id="toolbarLeft"></div>
@@ -980,463 +260,27 @@
         <option value="age">По возрасту</option>
       </select>
     </div>
-
+    <div class="active-filters" id="activeTags"></div>
     <div class="cards-grid" id="list"></div>
   </main>
 </div>
 
-<script>
-// ── DATA & STATE ──────────────────────────────────────────────────
-let allData = [];
-let favorites = JSON.parse(localStorage.getItem('krug_favorites') || '[]');
-let state = {
-  search: '',
-  age: '',
-  category: '',
-  showFav: false,
-  sort: 'default',
-};
-
-// ── EMOJI MAP ─────────────────────────────────────────────────────
-const categoryEmoji = {
-  'Фитнес-аэробика': '🤸', 'Академический хор': '🎵', 'Спортивная аэробика': '💪',
-  'Английский язык': '🇬🇧', 'Математика': '🔢', 'Предметная область математики': '📐',
-  'Предметная область астрономия': '🔭', 'Айкидо': '🥋', 'Спортивная гимнастика': '🤼',
-  'Художественные и ремонтные работы с изделиями, состоящими из различных материалов': '🛠️',
-  'Цирковое искусство': '🎪', 'Работа с глиной, песком, тестом и пластилином': '🏺',
-  'Драматический театр': '🎭', 'Рисование': '🎨', 'Танцы': '💃', 'Музыка': '🎸',
-  'Плавание': '🏊', 'Футбол': '⚽', 'Шахматы': '♟️', 'Программирование': '💻',
-  'Робототехника': '🤖', 'Вокал': '🎤', 'Лепка': '🏺', 'Рукоделие': '🧵',
-};
-
-function getEmoji(cat) {
-  for (const [key, val] of Object.entries(categoryEmoji)) {
-    if (cat && cat.toLowerCase().includes(key.toLowerCase())) return val;
-  }
-  const defaults = ['🌟','🎯','📚','✨','🎓','🌈','⚡','🎠'];
-  let hash = 0;
-  if (cat) for (let i = 0; i < cat.length; i++) hash = (hash * 31 + cat.charCodeAt(i)) | 0;
-  return defaults[Math.abs(hash) % defaults.length];
-}
-
-// ── AGE MATCHING ──────────────────────────────────────────────────
-function matchAge(itemAge, filter) {
-  if (!filter) return true;
-  if (!itemAge) return false;
-  const nums = itemAge.match(/\d+/g);
-  if (!nums) return false;
-  const itemMin = +nums[0];
-  const itemMax = nums[1] ? +nums[1] : itemMin;
-
-  if (filter === '18+') return itemMin >= 18 || itemMax >= 18;
-  if (filter === '14+') return itemMax >= 14;
-  if (filter === '3-6')  return itemMin <= 6 && itemMax >= 3;
-  if (filter === '6-10') return itemMin <= 10 && itemMax >= 6;
-  if (filter === '10-14') return itemMin <= 14 && itemMax >= 10;
-  return false;
-}
-
-// ── HIGHLIGHT ─────────────────────────────────────────────────────
-function highlight(text, query) {
-  if (!query || !text) return text || '';
-  const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-  return String(text).replace(re, '<mark class="hl">$1</mark>');
-}
-
-// ── RENDER CARD ───────────────────────────────────────────────────
-function renderCard(item, idx) {
-  const id = item['Ссылка'];
-  const isFav = favorites.includes(id);
-  const q = state.search;
-
-  const title    = highlight(item['Наименование детского объединения'], q);
-  const cat      = item['Наименование третьего уровня РБНДО'] || '';
-  const age      = item['Возраст'] || '';
-  const address  = highlight(item['Адрес предоставления услуги'], q);
-  const teacher  = highlight(item['Педагог'], q);
-  const link     = item['Ссылка'];
-  const emoji    = getEmoji(cat);
-
-  const delay = Math.min(idx * 30, 300);
-
-  return `
-    <div class="card" style="animation-delay:${delay}ms">
-      <button class="card-fav ${isFav ? 'active' : ''}" onclick="toggleFav('${id.replace(/'/g,"\\'")}')">
-        ${isFav ? '★' : '☆'}
-      </button>
-      <div class="card-top">
-        <div class="card-icon">${emoji}</div>
-        <div class="card-info">
-          <div class="card-title">${title}</div>
-          <div class="card-category">${cat}</div>
-        </div>
-      </div>
-      <div class="card-meta">
-        ${age ? `<span class="meta-pill">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          ${age} лет
-        </span>` : ''}
-      </div>
-      ${address ? `<div class="card-address">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span>${address}</span>
-      </div>` : ''}
-      ${teacher ? `<div class="card-teacher">${teacher}</div>` : ''}
-      ${link ? `<a class="card-link" href="${link}" target="_blank" rel="noopener">
-        Записаться
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>` : ''}
-    </div>
-  `;
-}
-
-// ── APPLY FILTERS ─────────────────────────────────────────────────
-function applyFilters() {
-  const text = state.search.toLowerCase();
-
-  let filtered = allData.filter(item => {
-    if (text) {
-      const t = [
-        item['Наименование детского объединения'],
-        item['Наименование третьего уровня РБНДО'],
-        item['Адрес предоставления услуги'],
-        item['Педагог'],
-      ].join(' ').toLowerCase();
-      if (!t.includes(text)) return false;
-    }
-    if (state.category && item['Наименование третьего уровня РБНДО'] !== state.category) return false;
-    if (!matchAge(item['Возраст'], state.age)) return false;
-    if (state.showFav && !favorites.includes(item['Ссылка'])) return false;
-    return true;
-  });
-
-  // Sort
-  if (state.sort === 'alpha') {
-    filtered.sort((a, b) => (a['Наименование детского объединения'] || '').localeCompare(b['Наименование детского объединения'] || '', 'ru'));
-  } else if (state.sort === 'age') {
-    filtered.sort((a, b) => {
-      const an = (a['Возраст'] || '').match(/\d+/);
-      const bn = (b['Возраст'] || '').match(/\d+/);
-      return (an ? +an[0] : 99) - (bn ? +bn[0] : 99);
-    });
-  }
-
-  renderList(filtered);
-  updateStats(filtered.length);
-}
-
-// ── RENDER LIST ───────────────────────────────────────────────────
-function renderList(items) {
-  const list = document.getElementById('list');
-
-  if (items.length === 0) {
-    list.innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🔍</div>
-        <h3>Ничего не найдено</h3>
-        <p>Попробуйте изменить фильтры<br>или поисковый запрос</p>
-      </div>`;
-    return;
-  }
-
-  list.innerHTML = items.map((item, i) => renderCard(item, i)).join('');
-
-  document.getElementById('toolbarLeft').innerHTML =
-    `<strong>${items.length}</strong> ${plural(items.length, 'кружок', 'кружка', 'кружков')}`;
-}
-
-function plural(n, one, few, many) {
-  const m = n % 100;
-  if (m >= 11 && m <= 14) return many;
-  const r = n % 10;
-  if (r === 1) return one;
-  if (r >= 2 && r <= 4) return few;
-  return many;
-}
-
-function updateStats(count) {
-  document.getElementById('statsCount').textContent = count;
-  const active = [];
-  if (state.search) active.push(`«${state.search}»`);
-  if (state.age) active.push(`возраст ${state.age}`);
-  if (state.category) active.push(state.category);
-  if (state.showFav) active.push('избранное');
-  document.getElementById('statsActive').textContent = active.length ? '· ' + active.join(', ') : '';
-}
-
-// ── CATEGORIES ────────────────────────────────────────────────────
-function initCategories() {
-  const counts = {};
-  allData.forEach(item => {
-    const c = item['Наименование третьего уровня РБНДО'];
-    if (c) counts[c] = (counts[c] || 0) + 1;
-  });
-
-  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  const catList = document.getElementById('catList');
-
-  catList.innerHTML = sorted.map(([cat, cnt]) => `
-    <div class="cat-item" data-cat="${cat.replace(/"/g,'&quot;')}" onclick="selectCategory(this)">
-      <span class="cat-dot"></span>
-      <span>${cat}</span>
-      <span class="cat-count">${cnt}</span>
-    </div>
-  `).join('');
-}
-
-function selectCategory(el) {
-  const cat = el.dataset.cat;
-  const same = state.category === cat;
-  state.category = same ? '' : cat;
-
-  document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
-  if (!same) el.classList.add('active');
-
-  updateResetBtn();
-  applyFilters();
-}
-
-// ── FAVORITES ─────────────────────────────────────────────────────
-function toggleFav(id) {
-  if (favorites.includes(id)) {
-    favorites = favorites.filter(f => f !== id);
-  } else {
-    favorites.push(id);
-  }
-  localStorage.setItem('krug_favorites', JSON.stringify(favorites));
-  applyFilters();
-}
-
-// ── RESET ─────────────────────────────────────────────────────────
-function updateResetBtn() {
-  const hasFilter = state.search || state.age || state.category || state.showFav;
-  document.getElementById('filterReset').classList.toggle('active', !!hasFilter);
-}
-
-function resetFilters() {
-  state = { search: '', age: '', category: '', showFav: false, sort: state.sort };
-  document.getElementById('search').value = '';
-  document.getElementById('searchClear').classList.remove('visible');
-  document.querySelectorAll('.age-pill').forEach(p => p.classList.toggle('active', p.dataset.age === ''));
-  document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
-  document.getElementById('favToggle').classList.remove('active');
-  document.getElementById('favToggle').textContent = '';
-  document.getElementById('favToggle').innerHTML = '<span class="fav-toggle-star">★</span> Показать избранное';
-  updateResetBtn();
-  applyFilters();
-}
-
-// ── EVENT BINDINGS ────────────────────────────────────────────────
-document.getElementById('search').addEventListener('input', e => {
-  state.search = e.target.value;
-  document.getElementById('searchClear').classList.toggle('visible', !!e.target.value);
-  updateResetBtn();
-  applyFilters();
-});
-
-document.getElementById('searchClear').addEventListener('click', () => {
-  document.getElementById('search').value = '';
-  state.search = '';
-  document.getElementById('searchClear').classList.remove('visible');
-  updateResetBtn();
-  applyFilters();
-});
-
-document.getElementById('agePills').addEventListener('click', e => {
-  const pill = e.target.closest('.age-pill');
-  if (!pill) return;
-  document.querySelectorAll('.age-pill').forEach(p => p.classList.remove('active'));
-  pill.classList.add('active');
-  state.age = pill.dataset.age;
-  updateResetBtn();
-  applyFilters();
-});
-
-document.getElementById('favToggle').addEventListener('click', () => {
-  state.showFav = !state.showFav;
-  const btn = document.getElementById('favToggle');
-  btn.classList.toggle('active', state.showFav);
-  btn.innerHTML = state.showFav
-    ? '<span class="fav-toggle-star">★</span> Только избранное'
-    : '<span class="fav-toggle-star">★</span> Показать избранное';
-  updateResetBtn();
-  applyFilters();
-});
-
-document.getElementById('filterReset').addEventListener('click', resetFilters);
-
-document.getElementById('sortSelect').addEventListener('change', e => {
-  state.sort = e.target.value;
-  applyFilters();
-});
-
-// ── DRAWER ────────────────────────────────────────────────────────
-const drawer        = document.getElementById('drawer');
-const drawerOverlay = document.getElementById('drawerOverlay');
-const mobileBtn     = document.getElementById('mobileFilterBtn');
-const mobileCount   = document.getElementById('mobileFilterCount');
-
-function openDrawer() {
-  drawer.classList.add('open');
-  drawerOverlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  syncDrawerToState();
-}
-
-function closeDrawer() {
-  drawer.classList.remove('open');
-  drawerOverlay.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function syncDrawerToState() {
-  // Age pills
-  document.querySelectorAll('#agePillsDrawer .age-pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.age === state.age);
-  });
-  // Category
-  document.querySelectorAll('#catListDrawer .cat-item').forEach(i => {
-    i.classList.toggle('active', i.dataset.cat === state.category);
-  });
-  // Fav
-  const fb = document.getElementById('favToggleDrawer');
-  fb.classList.toggle('active', state.showFav);
-  fb.innerHTML = state.showFav
-    ? '<span class="fav-toggle-star">★</span> Только избранное'
-    : '<span class="fav-toggle-star">★</span> Показать избранное';
-}
-
-function updateMobileBadge() {
-  let count = 0;
-  if (state.age) count++;
-  if (state.category) count++;
-  if (state.showFav) count++;
-  if (state.search) count++;
-  if (count > 0) {
-    mobileCount.textContent = count;
-    mobileCount.style.display = '';
-  } else {
-    mobileCount.style.display = 'none';
-  }
-}
-
-mobileBtn.addEventListener('click', openDrawer);
-document.getElementById('drawerClose').addEventListener('click', closeDrawer);
-drawerOverlay.addEventListener('click', closeDrawer);
-
-document.getElementById('drawerApplyBtn').addEventListener('click', closeDrawer);
-
-document.getElementById('drawerResetBtn').addEventListener('click', () => {
-  resetFilters();
-  syncDrawerToState();
-  updateMobileBadge();
-});
-
-document.getElementById('favToggleDrawer').addEventListener('click', () => {
-  state.showFav = !state.showFav;
-  syncDrawerToState();
-  updateResetBtn();
-  updateMobileBadge();
-  applyFilters();
-});
-
-document.getElementById('agePillsDrawer').addEventListener('click', e => {
-  const pill = e.target.closest('.age-pill');
-  if (!pill) return;
-  document.querySelectorAll('#agePillsDrawer .age-pill').forEach(p => p.classList.remove('active'));
-  pill.classList.add('active');
-  state.age = pill.dataset.age;
-  // Also sync desktop
-  document.querySelectorAll('#agePills .age-pill').forEach(p => p.classList.toggle('active', p.dataset.age === state.age));
-  updateResetBtn();
-  updateMobileBadge();
-  applyFilters();
-});
-
-// Touch swipe-down to close
-let touchStartY = 0;
-drawer.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
-drawer.addEventListener('touchmove', e => {
-  const delta = e.touches[0].clientY - touchStartY;
-  if (delta > 60) closeDrawer();
-}, { passive: true });
-
-// ── OVERRIDE applyFilters to also update badge ─────────────────────
-const _origApplyFilters = applyFilters;
-// Wrap category init for drawer
-function initCategoriesDrawer() {
-  const counts = {};
-  allData.forEach(item => {
-    const c = item['Наименование третьего уровня РБНДО'];
-    if (c) counts[c] = (counts[c] || 0) + 1;
-  });
-  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  document.getElementById('catListDrawer').innerHTML = sorted.map(([cat, cnt]) => `
-    <div class="cat-item" data-cat="${cat.replace(/"/g,'&quot;')}" onclick="selectCategoryDrawer(this)">
-      <span class="cat-dot"></span>
-      <span>${cat}</span>
-      <span class="cat-count">${cnt}</span>
-    </div>
-  `).join('');
-}
-
-function selectCategoryDrawer(el) {
-  const cat = el.dataset.cat;
-  const same = state.category === cat;
-  state.category = same ? '' : cat;
-  document.querySelectorAll('#catListDrawer .cat-item').forEach(i => i.classList.remove('active'));
-  document.querySelectorAll('#catList .cat-item').forEach(i => i.classList.remove('active'));
-  if (!same) {
-    el.classList.add('active');
-    // sync desktop sidebar too
-    document.querySelectorAll('#catList .cat-item').forEach(i => {
-      if (i.dataset.cat === cat) i.classList.add('active');
-    });
-  }
-  updateResetBtn();
-  updateMobileBadge();
-  applyFilters();
-}
-
-// ── PATCH LOAD DATA to also init drawer categories ─────────────────
-fetch('./data.json')
-  .then(r => r.json())
-  .then(json => {
-    allData = json;
-    initCategories();
-    initCategoriesDrawer();
-    applyFilters();
-    updateMobileBadge();
-  })
-  .catch(() => {
-    document.getElementById('list').innerHTML =
-      '<div class="empty"><div class="empty-icon">⚠️</div><h3>Не удалось загрузить данные</h3><p>Проверьте, что файл data.json находится рядом с index.html</p></div>';
-  });
-</script>
-
-<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-left">
     <img src="./Victoria_logo-02.png" alt="Виктория">
-    <div class="footer-org">
-      ГБОУ ДО ДЮЦ «Виктория»<br>
-      Детско-юношеский центр
-    </div>
+    <div class="footer-org">ГБОУ ДО ДЮЦ «Виктория»<br>Детско-юношеский центр</div>
   </div>
   <div class="footer-copy">© 2025 ГБОУ ДО ДЮЦ «Виктория». Все права защищены.</div>
 </footer>
 
-<!-- MOBILE FILTER BUTTON -->
 <button class="mobile-filter-btn" id="mobileFilterBtn">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
   Фильтры
-  <span class="btn-badge" id="mobileFilterCount" style="display:none"></span>
+  <span class="btn-badge" id="mobileFilterCount" style="display:none">0</span>
 </button>
 
-<!-- DRAWER OVERLAY -->
 <div class="drawer-overlay" id="drawerOverlay"></div>
 
-<!-- DRAWER -->
 <div class="drawer" id="drawer">
   <div class="drawer-handle"></div>
   <div class="drawer-header">
@@ -1447,11 +291,9 @@ fetch('./data.json')
     <div class="filter-section">
       <div class="filter-label">Избранное</div>
       <button class="fav-toggle" id="favToggleDrawer">
-        <span class="fav-toggle-star">★</span>
-        Показать избранное
+        <span class="fav-toggle-star">★</span>Показать избранное
       </button>
     </div>
-
     <div class="filter-section">
       <div class="filter-label">Возраст</div>
       <div class="age-pills" id="agePillsDrawer">
@@ -1463,7 +305,6 @@ fetch('./data.json')
         <button class="age-pill" data-age="18+">18+</button>
       </div>
     </div>
-
     <div class="filter-section">
       <div class="filter-label">Категория</div>
       <div class="cat-list" id="catListDrawer"></div>
@@ -1475,5 +316,231 @@ fetch('./data.json')
   </div>
 </div>
 
+<script>
+// STATE
+let allData = [];
+let favorites = JSON.parse(localStorage.getItem('krug_fav') || '[]');
+let state = { search: '', age: '', category: '', showFav: false, sort: 'default' };
+
+// EMOJI
+const emojiMap = { 'аэробика':'🤸','хор':'🎵','гимнастика':'🤼','английск':'🇬🇧','математик':'📐','астроном':'🔭','айкидо':'🥋','цирк':'🎪','глин':'🏺','театр':'🎭','рисован':'🎨','танц':'💃','музык':'🎸','плаван':'🏊','футбол':'⚽','шахмат':'♟️','програм':'💻','робот':'🤖','вокал':'🎤','лепк':'🏺','рукодел':'🧵','стретч':'🧘','бокс':'🥊','волейбол':'🏐','баскетбол':'🏀','художеств':'🎨','народн':'🪗' };
+function getEmoji(cat) {
+  if (!cat) return '🌟';
+  const l = cat.toLowerCase();
+  for (const [k,v] of Object.entries(emojiMap)) { if (l.includes(k)) return v; }
+  const pool = ['🌟','🎯','📚','✨','🎓','🌈','⚡','🎠','🌿','🦋'];
+  let h = 0; for (let i=0;i<cat.length;i++) h=(h*31+cat.charCodeAt(i))|0;
+  return pool[Math.abs(h)%pool.length];
+}
+
+// AGE MATCH
+function matchAge(itemAge, filter) {
+  if (!filter) return true;
+  if (!itemAge) return false;
+  const nums = itemAge.match(/\d+/g);
+  if (!nums) return false;
+  const mn=+nums[0], mx=nums[1]?+nums[1]:mn;
+  if (filter==='18+') return mn>=18||mx>=18;
+  if (filter==='14+') return mx>=14;
+  if (filter==='3-6')  return mn<=6&&mx>=3;
+  if (filter==='6-10') return mn<=10&&mx>=6;
+  if (filter==='10-14') return mn<=14&&mx>=10;
+  return false;
+}
+
+// HIGHLIGHT
+function hl(text, q) {
+  if (!q||!text) return text||'';
+  const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+  return String(text).replace(re,'<mark class="hl">$1</mark>');
+}
+
+// RENDER CARD
+function renderCard(item, idx) {
+  const id=item['Ссылка']||'', isFav=favorites.includes(id), q=state.search;
+  const cat=item['Наименование третьего уровня РБНДО']||'';
+  const age=item['Возраст']||'', addr=item['Адрес предоставления услуги']||'', teach=item['Педагог']||'';
+  return `<div class="card" style="animation-delay:${Math.min(idx*25,300)}ms">
+    <button class="card-fav ${isFav?'active':''}" onclick="toggleFav('${id.replace(/'/g,"\\'")}')">
+      ${isFav?'★':'☆'}
+    </button>
+    <div class="card-top">
+      <div class="card-icon">${getEmoji(cat)}</div>
+      <div class="card-info">
+        <div class="card-title">${hl(item['Наименование детского объединения'],q)}</div>
+        <div class="card-category">${cat}</div>
+      </div>
+    </div>
+    ${age?`<div class="card-meta"><span class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>${age} лет</span></div>`:''}
+    ${addr?`<div class="card-address"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>${hl(addr,q)}</span></div>`:''}
+    ${teach?`<div class="card-teacher">${hl(teach,q)}</div>`:''}
+    ${id?`<a class="card-link" href="${id}" target="_blank" rel="noopener">Записаться <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>`:''}
+  </div>`;
+}
+
+// SKELETON
+function showSkeleton() {
+  document.getElementById('list').innerHTML = Array.from({length:6}).map(()=>`
+    <div class="skeleton-card">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div class="skel" style="width:44px;height:44px;border-radius:12px;flex-shrink:0"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+          <div class="skel" style="height:16px;width:75%"></div>
+          <div class="skel" style="height:11px;width:45%"></div>
+        </div>
+      </div>
+      <div class="skel" style="height:28px;width:90px"></div>
+      <div class="skel" style="height:38px"></div>
+      <div class="skel" style="height:36px;width:130px;border-radius:10px"></div>
+    </div>`).join('');
+}
+
+// ACTIVE TAGS
+function renderActiveTags() {
+  const tags = [];
+  if (state.age) tags.push({label:`Возраст: ${state.age}`,key:'age'});
+  if (state.category) tags.push({label:state.category,key:'category'});
+  if (state.showFav) tags.push({label:'★ Избранное',key:'fav'});
+  document.getElementById('activeTags').innerHTML = tags.map(t=>`
+    <span class="filter-tag">${t.label}
+      <button class="filter-tag-remove" onclick="removeTag('${t.key}')">✕</button>
+    </span>`).join('');
+}
+
+function removeTag(key) {
+  if (key==='age') { state.age=''; document.querySelectorAll('.age-pill').forEach(p=>p.classList.toggle('active',p.dataset.age==='')); }
+  else if (key==='category') { state.category=''; document.querySelectorAll('.cat-item').forEach(i=>i.classList.remove('active')); }
+  else if (key==='fav') {
+    state.showFav=false;
+    ['favToggle','favToggleDrawer'].forEach(id=>{ const el=document.getElementById(id); el.classList.remove('active'); el.innerHTML='<span class="fav-toggle-star">★</span>Показать избранное'; });
+  }
+  updateResetBtn(); updateMobileBadge(); applyFilters();
+}
+
+// PLURAL
+function plural(n,one,few,many) {
+  const m=n%100; if(m>=11&&m<=14) return many;
+  const r=n%10; if(r===1) return one; if(r>=2&&r<=4) return few; return many;
+}
+
+// RENDER LIST
+function renderList(items) {
+  const list = document.getElementById('list');
+  if (!items.length) {
+    list.innerHTML=`<div class="empty"><div class="empty-icon">🔍</div><h3>Ничего не найдено</h3><p>Попробуйте изменить фильтры или поисковый запрос</p></div>`;
+    document.getElementById('toolbarLeft').innerHTML=''; return;
+  }
+  list.innerHTML = items.map((item,i)=>renderCard(item,i)).join('');
+  document.getElementById('toolbarLeft').innerHTML=`<strong>${items.length}</strong> ${plural(items.length,'кружок','кружка','кружков')}`;
+}
+
+// UPDATE STATS
+function updateStats(count) {
+  document.getElementById('statsCount').textContent=count;
+  const a=[];
+  if(state.search) a.push(`«${state.search}»`);
+  if(state.age) a.push(`возраст ${state.age}`);
+  if(state.category) a.push(state.category);
+  if(state.showFav) a.push('избранное');
+  document.getElementById('statsActive').textContent=a.length?'· '+a.join(', '):'';
+}
+
+// APPLY FILTERS
+function applyFilters() {
+  const text=state.search.toLowerCase();
+  let filtered=allData.filter(item=>{
+    if(text){ const t=[item['Наименование детского объединения'],item['Наименование третьего уровня РБНДО'],item['Адрес предоставления услуги'],item['Педагог']].join(' ').toLowerCase(); if(!t.includes(text)) return false; }
+    if(state.category&&item['Наименование третьего уровня РБНДО']!==state.category) return false;
+    if(!matchAge(item['Возраст'],state.age)) return false;
+    if(state.showFav&&!favorites.includes(item['Ссылка'])) return false;
+    return true;
+  });
+  if(state.sort==='alpha') filtered.sort((a,b)=>(a['Наименование детского объединения']||'').localeCompare(b['Наименование детского объединения']||'','ru'));
+  else if(state.sort==='age') filtered.sort((a,b)=>{const an=(a['Возраст']||'').match(/\d+/),bn=(b['Возраст']||'').match(/\d+/);return(an?+an[0]:99)-(bn?+bn[0]:99);});
+  renderList(filtered);
+  updateStats(filtered.length);
+  renderActiveTags();
+}
+
+// INIT CATEGORIES
+function buildCatHTML(targetId, fnName) {
+  const counts={};
+  allData.forEach(item=>{const c=item['Наименование третьего уровня РБНДО'];if(c) counts[c]=(counts[c]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  document.getElementById(targetId).innerHTML=sorted.map(([cat,cnt])=>`
+    <div class="cat-item" data-cat="${cat.replace(/"/g,'&quot;')}" onclick="${fnName}(this)">
+      <span class="cat-dot"></span><span>${cat}</span><span class="cat-count">${cnt}</span>
+    </div>`).join('');
+}
+
+function selectCategory(el) {
+  state.category = state.category===el.dataset.cat ? '' : el.dataset.cat;
+  document.querySelectorAll('.cat-item').forEach(i=>i.classList.toggle('active',i.dataset.cat===state.category));
+  updateResetBtn(); updateMobileBadge(); applyFilters();
+}
+function selectCategoryDrawer(el) { selectCategory(el); }
+
+// FAVORITES
+function toggleFav(id) {
+  favorites=favorites.includes(id)?favorites.filter(f=>f!==id):[...favorites,id];
+  localStorage.setItem('krug_fav',JSON.stringify(favorites));
+  applyFilters();
+}
+
+// RESET
+function updateResetBtn() {
+  document.getElementById('filterReset').classList.toggle('active',!!(state.search||state.age||state.category||state.showFav));
+}
+function updateMobileBadge() {
+  const n=[state.age,state.category,state.showFav?'x':'',state.search].filter(Boolean).length;
+  const el=document.getElementById('mobileFilterCount');
+  el.textContent=n; el.style.display=n?'':'none';
+}
+function resetFilters() {
+  state.search=''; state.age=''; state.category=''; state.showFav=false;
+  document.getElementById('search').value='';
+  document.getElementById('searchClear').classList.remove('visible');
+  document.querySelectorAll('.age-pill').forEach(p=>p.classList.toggle('active',p.dataset.age===''));
+  document.querySelectorAll('.cat-item').forEach(i=>i.classList.remove('active'));
+  ['favToggle','favToggleDrawer'].forEach(id=>{ const el=document.getElementById(id); el.classList.remove('active'); el.innerHTML='<span class="fav-toggle-star">★</span>Показать избранное'; });
+  updateResetBtn(); updateMobileBadge(); applyFilters();
+}
+
+// DRAWER
+function syncDrawerToState() {
+  document.querySelectorAll('#agePillsDrawer .age-pill').forEach(p=>p.classList.toggle('active',p.dataset.age===state.age));
+  document.querySelectorAll('#catListDrawer .cat-item').forEach(i=>i.classList.toggle('active',i.dataset.cat===state.category));
+  const fb=document.getElementById('favToggleDrawer');
+  fb.classList.toggle('active',state.showFav);
+  fb.innerHTML=state.showFav?'<span class="fav-toggle-star">★</span>Только избранное':'<span class="fav-toggle-star">★</span>Показать избранное';
+}
+function openDrawer() { syncDrawerToState(); document.getElementById('drawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+// EVENTS
+document.getElementById('search').addEventListener('input', e=>{ state.search=e.target.value; document.getElementById('searchClear').classList.toggle('visible',!!e.target.value); updateResetBtn(); updateMobileBadge(); applyFilters(); });
+document.getElementById('searchClear').addEventListener('click', ()=>{ document.getElementById('search').value=''; state.search=''; document.getElementById('searchClear').classList.remove('visible'); updateResetBtn(); updateMobileBadge(); applyFilters(); });
+document.getElementById('agePills').addEventListener('click', e=>{ const p=e.target.closest('.age-pill'); if(!p) return; state.age=p.dataset.age; document.querySelectorAll('.age-pill').forEach(x=>x.classList.toggle('active',x.dataset.age===state.age)); updateResetBtn(); updateMobileBadge(); applyFilters(); });
+document.getElementById('favToggle').addEventListener('click', ()=>{ state.showFav=!state.showFav; const btn=document.getElementById('favToggle'); btn.classList.toggle('active',state.showFav); btn.innerHTML=state.showFav?'<span class="fav-toggle-star">★</span>Только избранное':'<span class="fav-toggle-star">★</span>Показать избранное'; updateResetBtn(); updateMobileBadge(); applyFilters(); });
+document.getElementById('filterReset').addEventListener('click', resetFilters);
+document.getElementById('sortSelect').addEventListener('change', e=>{ state.sort=e.target.value; applyFilters(); });
+document.getElementById('mobileFilterBtn').addEventListener('click', openDrawer);
+document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
+document.getElementById('drawerApplyBtn').addEventListener('click', closeDrawer);
+document.getElementById('drawerResetBtn').addEventListener('click', ()=>{ resetFilters(); syncDrawerToState(); });
+document.getElementById('favToggleDrawer').addEventListener('click', ()=>{ state.showFav=!state.showFav; const btn=document.getElementById('favToggle'); btn.classList.toggle('active',state.showFav); btn.innerHTML=state.showFav?'<span class="fav-toggle-star">★</span>Только избранное':'<span class="fav-toggle-star">★</span>Показать избранное'; updateResetBtn(); updateMobileBadge(); syncDrawerToState(); applyFilters(); });
+document.getElementById('agePillsDrawer').addEventListener('click', e=>{ const p=e.target.closest('.age-pill'); if(!p) return; state.age=p.dataset.age; document.querySelectorAll('.age-pill').forEach(x=>x.classList.toggle('active',x.dataset.age===state.age)); updateResetBtn(); updateMobileBadge(); applyFilters(); });
+let touchY=0;
+document.getElementById('drawer').addEventListener('touchstart', e=>{ touchY=e.touches[0].clientY; },{passive:true});
+document.getElementById('drawer').addEventListener('touchmove', e=>{ if(e.touches[0].clientY-touchY>60) closeDrawer(); },{passive:true});
+
+// LOAD
+showSkeleton();
+fetch('./data.json')
+  .then(r=>r.json())
+  .then(json=>{ allData=json; buildCatHTML('catList','selectCategory'); buildCatHTML('catListDrawer','selectCategoryDrawer'); applyFilters(); updateMobileBadge(); })
+  .catch(()=>{ document.getElementById('list').innerHTML=`<div class="empty"><div class="empty-icon">⚠️</div><h3>Не удалось загрузить данные</h3><p>Проверьте, что data.json лежит рядом с index.html</p></div>`; });
+</script>
 </body>
 </html>
