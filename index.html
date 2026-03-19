@@ -8,10 +8,12 @@
     body { font-family: Arial; padding: 20px; background:#f5f5f5; }
     input, select { padding: 10px; width: 100%; margin-bottom: 10px; font-size: 16px; border-radius:8px; border:1px solid #ccc; }
     .filters { display:grid; gap:10px; margin-bottom:15px; }
-    .item { padding: 15px; background:white; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
+    .item { padding: 15px; background:white; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); position:relative; }
     .title { font-weight: bold; font-size:18px; margin-bottom:5px; }
     .link { color: blue; display:inline-block; margin-top:5px; }
     .count { margin: 10px 0; font-weight: bold; }
+    .fav { position:absolute; top:10px; right:10px; cursor:pointer; font-size:20px; }
+    .active { color: gold; }
   </style>
 </head>
 <body>
@@ -37,6 +39,7 @@
 
   <script>
     let data = [];
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
 
     const list = document.getElementById('list');
     const search = document.getElementById('search');
@@ -44,14 +47,28 @@
     const ageFilter = document.getElementById('ageFilter');
     const count = document.getElementById('count');
 
+    function toggleFavorite(id) {
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(f => f !== id);
+      } else {
+        favorites.push(id);
+      }
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      applyFilters();
+    }
+
     function render(items) {
       list.innerHTML = '';
       count.textContent = `Найдено: ${items.length}`;
 
-      items.forEach(item => {
+      items.forEach((item, index) => {
+        const id = item['Ссылка'];
+        const isFav = favorites.includes(id);
+
         const div = document.createElement('div');
         div.className = 'item';
         div.innerHTML = `
+          <div class="fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${id}')">★</div>
           <div class="title">${item['Наименование детского объединения']}</div>
           <div>Категория: ${item['Наименование третьего уровня РБНДО']}</div>
           <div>Возраст: ${item['Возраст']}</div>
