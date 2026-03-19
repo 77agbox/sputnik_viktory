@@ -700,12 +700,176 @@
     @media (max-width: 768px) {
       .layout {
         grid-template-columns: 1fr;
-        padding: 0 16px 60px;
+        padding: 0 16px 80px;
       }
-      .sidebar { position: static; }
-      .hero { padding: 48px 16px 40px; }
+      .sidebar { display: none; }
+      .hero { padding: 40px 16px 32px; }
       .cards-grid { grid-template-columns: 1fr; }
+      .topbar { padding: 0 16px; }
+      .topbar-badge { display: none; }
     }
+
+    /* ── MOBILE FILTER BUTTON ── */
+    .mobile-filter-btn {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 14px 28px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(232,146,26,0.45);
+      gap: 10px;
+      align-items: center;
+      transition: transform 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    .mobile-filter-btn:active { transform: translateX(-50%) scale(0.96); }
+
+    .mobile-filter-btn .btn-badge {
+      background: #fff;
+      color: var(--accent);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      margin-left: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-filter-btn { display: flex; }
+    }
+
+    /* ── DRAWER OVERLAY ── */
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(30,20,10,0.5);
+      backdrop-filter: blur(3px);
+      z-index: 300;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .drawer-overlay.open {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ── DRAWER PANEL ── */
+    .drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 400;
+      background: var(--surface);
+      border-radius: 24px 24px 0 0;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: 0 -8px 48px rgba(60,40,10,0.18);
+    }
+
+    .drawer.open {
+      transform: translateY(0);
+    }
+
+    .drawer-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 100px;
+      margin: 12px auto 0;
+      flex-shrink: 0;
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .drawer-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .drawer-close {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 6px 8px;
+      font-size: 13px;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+
+    .drawer-close:hover { background: var(--border); }
+
+    .drawer-body {
+      overflow-y: auto;
+      flex: 1;
+      padding: 4px 0 8px;
+      overscroll-behavior: contain;
+    }
+
+    .drawer-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .drawer-apply {
+      flex: 1;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .drawer-apply:hover { background: var(--accent2); }
+
+    .drawer-reset-btn {
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .drawer-reset-btn:hover { background: var(--border); color: var(--text); }
 
     /* Skeleton loader */
     .skeleton {
@@ -1106,13 +1270,143 @@ document.getElementById('sortSelect').addEventListener('change', e => {
   applyFilters();
 });
 
-// ── LOAD DATA ─────────────────────────────────────────────────────
+// ── DRAWER ────────────────────────────────────────────────────────
+const drawer        = document.getElementById('drawer');
+const drawerOverlay = document.getElementById('drawerOverlay');
+const mobileBtn     = document.getElementById('mobileFilterBtn');
+const mobileCount   = document.getElementById('mobileFilterCount');
+
+function openDrawer() {
+  drawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  syncDrawerToState();
+}
+
+function closeDrawer() {
+  drawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function syncDrawerToState() {
+  // Age pills
+  document.querySelectorAll('#agePillsDrawer .age-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.age === state.age);
+  });
+  // Category
+  document.querySelectorAll('#catListDrawer .cat-item').forEach(i => {
+    i.classList.toggle('active', i.dataset.cat === state.category);
+  });
+  // Fav
+  const fb = document.getElementById('favToggleDrawer');
+  fb.classList.toggle('active', state.showFav);
+  fb.innerHTML = state.showFav
+    ? '<span class="fav-toggle-star">★</span> Только избранное'
+    : '<span class="fav-toggle-star">★</span> Показать избранное';
+}
+
+function updateMobileBadge() {
+  let count = 0;
+  if (state.age) count++;
+  if (state.category) count++;
+  if (state.showFav) count++;
+  if (state.search) count++;
+  if (count > 0) {
+    mobileCount.textContent = count;
+    mobileCount.style.display = '';
+  } else {
+    mobileCount.style.display = 'none';
+  }
+}
+
+mobileBtn.addEventListener('click', openDrawer);
+document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+drawerOverlay.addEventListener('click', closeDrawer);
+
+document.getElementById('drawerApplyBtn').addEventListener('click', closeDrawer);
+
+document.getElementById('drawerResetBtn').addEventListener('click', () => {
+  resetFilters();
+  syncDrawerToState();
+  updateMobileBadge();
+});
+
+document.getElementById('favToggleDrawer').addEventListener('click', () => {
+  state.showFav = !state.showFav;
+  syncDrawerToState();
+  updateResetBtn();
+  updateMobileBadge();
+  applyFilters();
+});
+
+document.getElementById('agePillsDrawer').addEventListener('click', e => {
+  const pill = e.target.closest('.age-pill');
+  if (!pill) return;
+  document.querySelectorAll('#agePillsDrawer .age-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  state.age = pill.dataset.age;
+  // Also sync desktop
+  document.querySelectorAll('#agePills .age-pill').forEach(p => p.classList.toggle('active', p.dataset.age === state.age));
+  updateResetBtn();
+  updateMobileBadge();
+  applyFilters();
+});
+
+// Touch swipe-down to close
+let touchStartY = 0;
+drawer.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+drawer.addEventListener('touchmove', e => {
+  const delta = e.touches[0].clientY - touchStartY;
+  if (delta > 60) closeDrawer();
+}, { passive: true });
+
+// ── OVERRIDE applyFilters to also update badge ─────────────────────
+const _origApplyFilters = applyFilters;
+// Wrap category init for drawer
+function initCategoriesDrawer() {
+  const counts = {};
+  allData.forEach(item => {
+    const c = item['Наименование третьего уровня РБНДО'];
+    if (c) counts[c] = (counts[c] || 0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  document.getElementById('catListDrawer').innerHTML = sorted.map(([cat, cnt]) => `
+    <div class="cat-item" data-cat="${cat.replace(/"/g,'&quot;')}" onclick="selectCategoryDrawer(this)">
+      <span class="cat-dot"></span>
+      <span>${cat}</span>
+      <span class="cat-count">${cnt}</span>
+    </div>
+  `).join('');
+}
+
+function selectCategoryDrawer(el) {
+  const cat = el.dataset.cat;
+  const same = state.category === cat;
+  state.category = same ? '' : cat;
+  document.querySelectorAll('#catListDrawer .cat-item').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('#catList .cat-item').forEach(i => i.classList.remove('active'));
+  if (!same) {
+    el.classList.add('active');
+    // sync desktop sidebar too
+    document.querySelectorAll('#catList .cat-item').forEach(i => {
+      if (i.dataset.cat === cat) i.classList.add('active');
+    });
+  }
+  updateResetBtn();
+  updateMobileBadge();
+  applyFilters();
+}
+
+// ── PATCH LOAD DATA to also init drawer categories ─────────────────
 fetch('./data.json')
   .then(r => r.json())
   .then(json => {
     allData = json;
     initCategories();
+    initCategoriesDrawer();
     applyFilters();
+    updateMobileBadge();
   })
   .catch(() => {
     document.getElementById('list').innerHTML =
@@ -1131,6 +1425,55 @@ fetch('./data.json')
   </div>
   <div class="footer-copy">© 2025 ГБОУ ДО ДЮЦ «Виктория». Все права защищены.</div>
 </footer>
+
+<!-- MOBILE FILTER BUTTON -->
+<button class="mobile-filter-btn" id="mobileFilterBtn">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+  Фильтры
+  <span class="btn-badge" id="mobileFilterCount" style="display:none"></span>
+</button>
+
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <span class="drawer-title">Фильтры</span>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="filter-section">
+      <div class="filter-label">Избранное</div>
+      <button class="fav-toggle" id="favToggleDrawer">
+        <span class="fav-toggle-star">★</span>
+        Показать избранное
+      </button>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Возраст</div>
+      <div class="age-pills" id="agePillsDrawer">
+        <button class="age-pill active" data-age="">Любой</button>
+        <button class="age-pill" data-age="3-6">3–6</button>
+        <button class="age-pill" data-age="6-10">6–10</button>
+        <button class="age-pill" data-age="10-14">10–14</button>
+        <button class="age-pill" data-age="14+">14+</button>
+        <button class="age-pill" data-age="18+">18+</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Категория</div>
+      <div class="cat-list" id="catListDrawer"></div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="drawer-reset-btn" id="drawerResetBtn">Сбросить</button>
+    <button class="drawer-apply" id="drawerApplyBtn">Показать результаты</button>
+  </div>
+</div>
 
 </body>
 </html>
